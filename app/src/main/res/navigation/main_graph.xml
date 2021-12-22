@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/setKeyFragment">
+    <fragment
+        android:id="@+id/setKeyFragment"
+        android:name="ru.mironov.currencyconverter.SetKeyFragment"
+        android:label="setkey_fragment"
+        tools:layout="@layout/setkey_fragment" >
+        <action
+            android:id="@+id/action_setKeyFragment_to_tabsFragment"
+            app:destination="@id/tabsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tabsFragment"
+        android:name="ru.mironov.currencyconverter.TabsFragment"
+        android:label="tabs_fragment"
+        tools:layout="@layout/tabs_fragment" />
+</navigation>
