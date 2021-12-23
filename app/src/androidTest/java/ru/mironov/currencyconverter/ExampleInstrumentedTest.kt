@@ -1,5 +1,7 @@
 package ru.mironov.currencyconverter
 
+import android.util.Base64
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
@@ -7,6 +9,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
+import ru.mironov.currencyconverter.security.Cryptography
+
+
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -15,10 +20,28 @@ import org.junit.Assert.*
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+
+    private val SAMPLE_ALIAS = "MYALIAS"
+    private val TAG = "MY_tag"
+
     @Test
     fun useAppContext() {
-        // Context of the app under test.
+
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("ru.mironov.currencyconverter", appContext.packageName)
+
+
+        val KEY_NAME:String = "Key1"
+
+        val c = Cryptography(KEY_NAME);
+
+        val encrypted = c.encrypt("plain text"); // returns base 64 data: 'BASE64_DATA,BASE64_IV'
+
+        val decrypted = c.decrypt(encrypted);
+
+
+        Log.d(TAG, decrypted.toString())
+
     }
+
+
 }
