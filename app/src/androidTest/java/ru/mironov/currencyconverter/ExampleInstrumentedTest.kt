@@ -1,7 +1,10 @@
 package ru.mironov.currencyconverter
 
-import android.util.Base64
-import android.util.Log
+
+import androidx.security.crypto.MasterKey
+import androidx.security.crypto.MasterKeys.getOrCreate
+
+
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
@@ -9,8 +12,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
-import ru.mironov.currencyconverter.security.Cryptography
 
+import androidx.security.crypto.EncryptedSharedPreferences
+import ru.mironov.currencyconverter.repository.DataShared
 
 
 /**
@@ -21,26 +25,21 @@ import ru.mironov.currencyconverter.security.Cryptography
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
 
-    private val SAMPLE_ALIAS = "MYALIAS"
-    private val TAG = "MY_tag"
 
     @Test
-    fun useAppContext() {
+    fun encryptedSharedPreferencesTest() {
 
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
+        val sharedPreferences = DataShared(appContext,"secret_shared_prefs")
 
-        val KEY_NAME:String = "Key1"
+        val str="Some string"
 
-        val c = Cryptography(KEY_NAME);
+        //sharedPreferences.saveString(str)
 
-        val encrypted = c.encrypt("plain text"); // returns base 64 data: 'BASE64_DATA,BASE64_IV'
+        val value = sharedPreferences.getString("Key1")
 
-        val decrypted = c.decrypt(encrypted);
-
-
-        Log.d(TAG, decrypted.toString())
-
+        assertEquals(str,value)
     }
 
 
