@@ -1,5 +1,4 @@
-package ru.mironov.currencyconverter
-
+package ru.mironov.currencyconverter.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -7,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import ru.mironov.currencyconverter.databinding.FragmentCurrenciesBinding
+import ru.mironov.currencyconverter.appComponent
+import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
 
-class CurrenciesFragment: Fragment() {
-    private lateinit var binding: FragmentCurrenciesBinding
+class GraphFragment: Fragment() {
+
+    private lateinit var binding: FragmentGraphBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +25,7 @@ class CurrenciesFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentCurrenciesBinding.inflate(inflater, container, false)
+        binding = FragmentGraphBinding.inflate(inflater, container, false)
 
         return binding.root
     }

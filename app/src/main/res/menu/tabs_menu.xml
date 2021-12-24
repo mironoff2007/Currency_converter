@@ -3,7 +3,12 @@
 
     <item
         android:id="@id/currency_converter"
-        android:title="currency converter" />
+        android:title="Converter"
+        android:icon="@drawable/ic_convert_currency"/>
 
+    <item
+        android:id="@id/currency_graph"
+        android:title="Graph"
+        android:icon="@drawable/ic_graph"/>
 
 </menu>
