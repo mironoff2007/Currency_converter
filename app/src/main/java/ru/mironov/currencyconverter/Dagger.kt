@@ -6,7 +6,9 @@ import dagger.Module
 @Component(modules = [AppModule::class])
 interface AppComponent {
     fun inject(activity: MainActivity)
-    //fun inject(fragment: CurrenciesFragment)
+    fun inject(fragment: TabsFragment)
+    fun inject(fragment: SetKeyFragment)
+    fun inject(fragment: CurrenciesFragment)
 
 }
 

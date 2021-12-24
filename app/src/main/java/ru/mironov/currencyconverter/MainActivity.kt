@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         appComponent.inject(this)
 
         val navController = getRootNavController()
-        prepareRootNavController(true, navController)
+        prepareRootNavController(false, navController)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, true)
     }
