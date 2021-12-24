@@ -11,7 +11,10 @@ import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentCurrenciesBinding
 
 class CurrenciesFragment: Fragment() {
-    private lateinit var binding: FragmentCurrenciesBinding
+
+    private var _binding: FragmentCurrenciesBinding?=null
+
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +28,13 @@ class CurrenciesFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentCurrenciesBinding.inflate(inflater, container, false)
+        _binding = FragmentCurrenciesBinding.inflate(inflater, container, false)
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding=null
     }
 }

@@ -13,7 +13,9 @@ import ru.mironov.currencyconverter.databinding.FragmentTabsBinding
 
 class TabsFragment:Fragment(R.layout.fragment_tabs) {
 
-    private lateinit var binding: FragmentTabsBinding
+    private var _binding: FragmentTabsBinding?=null
+
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,11 +26,16 @@ class TabsFragment:Fragment(R.layout.fragment_tabs) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = FragmentTabsBinding.bind(view)
+        _binding = FragmentTabsBinding.bind(view)
 
         val navHost = childFragmentManager.findFragmentById(R.id.tabsContainer) as NavHostFragment
         val navController = navHost.navController
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding=null
     }
 
 }

@@ -18,7 +18,9 @@ class SetKeyFragment:Fragment(R.layout.fragment_setkey) {
 
     private lateinit var viewModel: ViewModelSetKeyFragment
 
-    private lateinit var binding: FragmentSetkeyBinding
+    private var _binding: FragmentSetkeyBinding?=null
+
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,7 @@ class SetKeyFragment:Fragment(R.layout.fragment_setkey) {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentSetkeyBinding.inflate(inflater, container, false)
+        _binding = FragmentSetkeyBinding.inflate(inflater, container, false)
 
         val direction = R.id.action_setKeyFragment_to_tabsFragment
 
@@ -43,5 +45,10 @@ class SetKeyFragment:Fragment(R.layout.fragment_setkey) {
         //Log.d("My_tag",viewModel.myClass.toString())
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding=null
     }
 }

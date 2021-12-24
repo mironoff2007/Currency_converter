@@ -11,7 +11,9 @@ import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
 
 class GraphFragment: Fragment() {
 
-    private lateinit var binding: FragmentGraphBinding
+    private var _binding: FragmentGraphBinding?=null
+
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +27,13 @@ class GraphFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentGraphBinding.inflate(inflater, container, false)
+        _binding = FragmentGraphBinding.inflate(inflater, container, false)
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding=null
     }
 }
