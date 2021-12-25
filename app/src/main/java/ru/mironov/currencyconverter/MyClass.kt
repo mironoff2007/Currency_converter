@@ -1,4 +1,9 @@
 package ru.mironov.currencyconverter
 
-class MyClass {
+
+import javax.inject.Inject
+
+class MyClass @Inject constructor(){
+
+
 }

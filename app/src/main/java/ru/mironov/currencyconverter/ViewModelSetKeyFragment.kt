@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
-class ViewModelSetKeyFragment @Inject constructor() : ViewModel() {
-//val context: Context
+class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewModel() {
+
     @Inject
     lateinit var myClass:MyClass
 

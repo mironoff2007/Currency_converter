@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+
 import ru.mironov.currencyconverter.databinding.FragmentSetkeyBinding
 import androidx.navigation.fragment.findNavController
 import ru.mironov.currencyconverter.R
@@ -41,8 +41,8 @@ class SetKeyFragment:Fragment(R.layout.fragment_setkey) {
         binding.button.setOnClickListener { findNavController().navigate(direction) }
 
         viewModel = requireContext().appComponent.factory.create(ViewModelSetKeyFragment::class.java)
-        Log.d("My_tag","viewModel class -"+viewModel.myClass.toString())
 
+        Log.d("My_tag","viewModel context -"+viewModel.context.toString())
         return binding.root
     }
 
