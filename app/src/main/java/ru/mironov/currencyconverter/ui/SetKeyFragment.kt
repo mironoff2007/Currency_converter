@@ -40,9 +40,8 @@ class SetKeyFragment:Fragment(R.layout.fragment_setkey) {
 
         binding.button.setOnClickListener { findNavController().navigate(direction) }
 
-        viewModel = ViewModelProvider(this)[ViewModelSetKeyFragment::class.java]
-
-        //Log.d("My_tag",viewModel.myClass.toString())
+        viewModel = requireContext().appComponent.factory.create(ViewModelSetKeyFragment::class.java)
+        Log.d("My_tag","viewModel class -"+viewModel.myClass.toString())
 
         return binding.root
     }
