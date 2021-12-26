@@ -8,6 +8,7 @@ import dagger.*
 import dagger.multibindings.IntoMap
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.mironov.currencyconverter.ExampleInstrumentedTest
 import ru.mironov.currencyconverter.MainActivity
 import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
 import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
@@ -25,12 +26,10 @@ import javax.inject.Singleton
 @Component(modules = [AppModule::class, AppBindsModule::class,RetrofitModule::class])
 
 interface AppComponent {
-    fun inject(activity: MainActivity)
-    fun inject(fragment: TabsFragment)
-    fun inject(fragment: SetKeyFragment)
-    fun inject(fragment: CurrenciesFragment)
-    fun inject(fragment: GraphFragment)
 
+    fun inject(exampleInstrumentedTest: ExampleInstrumentedTest) {
+
+    }
 
     val factory: MultiViewModelFactory
 

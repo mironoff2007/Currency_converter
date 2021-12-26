@@ -2,6 +2,7 @@ package ru.mironov.currencyconverter
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Debug
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -12,7 +13,6 @@ import ru.mironov.currencyconverter.model.ViewModelMainActivity
 class MainActivity : AppCompatActivity() {
 
 
-
     private lateinit var viewModel: ViewModelMainActivity
 
     private lateinit var navController: NavController
@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
     private var currentFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        //Debug.waitForDebugger()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         appComponent.inject(this)
