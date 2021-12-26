@@ -41,8 +41,8 @@ interface AppComponent {
 class AppModule() {
 
     @Provides
-    fun provideMyClass(): Repository {
-        return Repository()
+    fun provideRepository(dataShared:DataShared): Repository {
+        return Repository(dataShared)
     }
 
     @Provides

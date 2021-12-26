@@ -8,8 +8,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import ru.mironov.currencyconverter.model.ViewModelMainActivity
+import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
+import ru.mironov.currencyconverter.repository.DataShared
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
+
 
     private lateinit var viewModel: ViewModelMainActivity
 
@@ -22,8 +27,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         appComponent.inject(this)
 
+        viewModel = appComponent.factory.create(ViewModelMainActivity::class.java)
         val navController = getRootNavController()
-        prepareRootNavController(true, navController)
+        prepareRootNavController(viewModel.isApiKeySaved(), navController)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, true)
     }
