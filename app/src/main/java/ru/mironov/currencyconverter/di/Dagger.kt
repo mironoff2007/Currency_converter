@@ -24,12 +24,13 @@ import javax.inject.Singleton
 
 @Component(modules = [AppModule::class, AppBindsModule::class,RetrofitModule::class])
 
-interface AppComponent {
+interface AppComponent  {
     fun inject(activity: MainActivity)
     fun inject(fragment: TabsFragment)
     fun inject(fragment: SetKeyFragment)
     fun inject(fragment: CurrenciesFragment)
     fun inject(fragment: GraphFragment)
+
 
 
     val factory: MultiViewModelFactory

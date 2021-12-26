@@ -24,10 +24,10 @@ object RetrofitModule {
 
 
     @Provides
-    fun provideRetrofit(gson: Gson): Retrofit.Builder {
+    fun provideRetrofit(): Retrofit.Builder {
         return Retrofit.Builder()
             .baseUrl("https://freecurrencyapi.net/api/v2/")
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(GsonConverterFactory.create())
     }
 
 
