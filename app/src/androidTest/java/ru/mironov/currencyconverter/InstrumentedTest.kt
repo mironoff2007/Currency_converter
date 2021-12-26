@@ -32,7 +32,7 @@ import ru.mironov.currencyconverter.di.TestAppComponent
 @RunWith(AndroidJUnit4::class)
 class InstrumentedTest {
 
-    lateinit var appComponent: TestAppComponent
+    private lateinit var appComponent: TestAppComponent
 
     @Before
     @Throws(Exception::class)
@@ -79,6 +79,4 @@ class InstrumentedTest {
 
         assertEquals(true, body.getBaseCurrency() == baseCurrency)
     }
-
-
 }
