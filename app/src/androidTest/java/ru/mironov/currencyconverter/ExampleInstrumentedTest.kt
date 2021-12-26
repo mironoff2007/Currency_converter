@@ -1,10 +1,6 @@
 package ru.mironov.currencyconverter
 
 
-import androidx.security.crypto.MasterKey
-import androidx.security.crypto.MasterKeys.getOrCreate
-
-
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
@@ -13,8 +9,7 @@ import org.junit.runner.RunWith
 
 import org.junit.Assert.*
 
-import androidx.security.crypto.EncryptedSharedPreferences
-import ru.mironov.currencyconverter.repository.DataShared
+import ru.mironov.currencyconverter.repository.EncryptedDataShared
 
 
 /**
@@ -31,7 +26,7 @@ class ExampleInstrumentedTest {
 
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-        val sharedPreferences = DataShared(appContext,"secret_shared_prefs")
+        val sharedPreferences = EncryptedDataShared(appContext,"secret_shared_prefs")
 
         val str="Some string"
 

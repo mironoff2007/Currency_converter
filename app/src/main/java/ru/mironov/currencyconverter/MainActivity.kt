@@ -8,9 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import ru.mironov.currencyconverter.model.ViewModelMainActivity
-import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
-import ru.mironov.currencyconverter.repository.DataShared
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 

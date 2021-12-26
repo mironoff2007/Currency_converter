@@ -41,6 +41,8 @@ class CurrenciesFragment: Fragment() {
         return binding.root
     }
 
+
+
     override fun onDestroy() {
         super.onDestroy()
         _binding=null

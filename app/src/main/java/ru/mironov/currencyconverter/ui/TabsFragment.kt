@@ -1,15 +1,18 @@
 package ru.mironov.currencyconverter.ui
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navOptions
 import androidx.navigation.ui.NavigationUI
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentTabsBinding
-import ru.mironov.currencyconverter.model.ViewModelMainActivity
-
 
 class TabsFragment:Fragment(R.layout.fragment_tabs) {
 
@@ -17,9 +20,12 @@ class TabsFragment:Fragment(R.layout.fragment_tabs) {
 
     private val binding get() = _binding!!
 
+    private lateinit var navController:NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireContext().appComponent.inject(this)
+        setHasOptionsMenu(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,8 +34,24 @@ class TabsFragment:Fragment(R.layout.fragment_tabs) {
         _binding = FragmentTabsBinding.bind(view)
 
         val navHost = childFragmentManager.findFragmentById(R.id.tabsContainer) as NavHostFragment
-        val navController = navHost.navController
+        navController = navHost.navController
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_set_apikey-> {
+                findTopNavController().navigate(R.id.setKeyFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
     override fun onDestroy() {
