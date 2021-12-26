@@ -5,14 +5,15 @@ import androidx.lifecycle.ViewModel
 import dagger.*
 import dagger.multibindings.IntoMap
 import ru.mironov.currencyconverter.MainActivity
-import ru.mironov.currencyconverter.MainApp
-import ru.mironov.currencyconverter.MyClass
-import ru.mironov.currencyconverter.ViewModelSetKeyFragment
+import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
+import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
+import ru.mironov.currencyconverter.model.ViewModelMainActivity
+import ru.mironov.currencyconverter.repository.DataShared
+import ru.mironov.currencyconverter.repository.Repository
 import ru.mironov.currencyconverter.ui.CurrenciesFragment
 import ru.mironov.currencyconverter.ui.SetKeyFragment
 import ru.mironov.currencyconverter.ui.TabsFragment
 import ru.mironov.currencyconverter.ui.GraphFragment
-import javax.inject.Singleton
 
 
 @Component(modules = [AppModule::class, AppBindsModule::class])
@@ -26,7 +27,6 @@ interface AppComponent {
 
     val factory: MultiViewModelFactory
 
-
     @Component.Builder
     interface Builder {
 
@@ -35,20 +35,22 @@ interface AppComponent {
         @BindsInstance
         fun context(context: Context): Builder
     }
-
-
 }
 
 @Module
 class AppModule() {
 
     @Provides
-    fun provideMyClass(): MyClass {
-        return MyClass()
+    fun provideMyClass(): Repository {
+        return Repository()
+    }
+
+    @Provides
+    fun provideDataShared(context:Context): DataShared {
+        return DataShared(context,"data_shared")
     }
 
 }
-
 
 
 @Module()
@@ -56,7 +58,15 @@ interface AppBindsModule {
 
     @Binds
     @[IntoMap ViewModelKey(ViewModelSetKeyFragment::class)]
-    fun provideViewModelSetKeyFragment(mainViewModel: ViewModelSetKeyFragment): ViewModel
+    fun provideViewModelSetKeyFragment(viewModelSetKeyFragment: ViewModelSetKeyFragment): ViewModel
+
+    @Binds
+    @[IntoMap ViewModelKey(ViewModelMainActivity::class)]
+    fun provideViewModelViewModelMainActivity(viewModelMainActivity: ViewModelMainActivity): ViewModel
+
+    @Binds
+    @[IntoMap ViewModelKey(ViewModelCurrenciesFragment::class)]
+    fun provideViewModelCurrenciesFragment(viewModelCurrenciesFragment: ViewModelCurrenciesFragment): ViewModel
 
 }
 

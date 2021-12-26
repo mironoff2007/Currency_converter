@@ -7,8 +7,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import ru.mironov.currencyconverter.model.ViewModelMainActivity
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: ViewModelMainActivity
 
     private lateinit var navController: NavController
 
@@ -20,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         appComponent.inject(this)
 
         val navController = getRootNavController()
-        prepareRootNavController(false, navController)
+        prepareRootNavController(true, navController)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, true)
     }

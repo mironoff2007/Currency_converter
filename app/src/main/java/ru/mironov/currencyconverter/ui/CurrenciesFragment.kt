@@ -9,8 +9,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentCurrenciesBinding
+import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
+import ru.mironov.currencyconverter.model.ViewModelMainActivity
+import ru.mironov.currencyconverter.repository.Repository
+import javax.inject.Inject
 
 class CurrenciesFragment: Fragment() {
+
+    @Inject
+    lateinit var repository: Repository
+
+    private lateinit var viewModel: ViewModelCurrenciesFragment
 
     private var _binding: FragmentCurrenciesBinding?=null
 
@@ -19,7 +28,6 @@ class CurrenciesFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireContext().appComponent.inject(this)
-        Log.d("My_tag",this.toString())
     }
 
     override fun onCreateView(

@@ -18,7 +18,6 @@ class GraphFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireContext().appComponent.inject(this)
-        Log.d("My_tag",this.toString())
     }
 
     override fun onCreateView(

@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Currency converter</string>
+    <string name="save">сохранить</string>
+    <string name="set_api_key">Задайте api ключ</string>
+    <string name="api_key_is_empty">api ключ пустой</string>
 </resources>

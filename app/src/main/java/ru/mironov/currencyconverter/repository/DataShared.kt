@@ -5,8 +5,9 @@ import android.content.SharedPreferences
 import android.util.Base64
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import javax.inject.Inject
 
-class DataShared(context: Context, dataName:String) {
+class DataShared (context: Context, dataName:String) {
 
     private val masterKey:MasterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
