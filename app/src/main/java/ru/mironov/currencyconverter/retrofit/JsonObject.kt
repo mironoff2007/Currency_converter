@@ -1,22 +1,22 @@
 package ru.mironov.currencyconverter.retrofit
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 class JsonObject {
     @SerializedName("query")
     private var query: Query? = null
 
     @SerializedName("data")
-    private var rates: HashMap<String, Double> = HashMap()
+    private var rates: TreeMap<String, Double> = TreeMap()
 
-    fun getRates(): HashMap<String, Double> {
+    fun getRates(): TreeMap<String, Double> {
         return rates
     }
 
     fun getBaseCurrency(): String? {
         return query?.getBaseCurrency()
     }
-
 }
 
 class Query {

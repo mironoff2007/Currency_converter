@@ -1,34 +1,20 @@
 package ru.mironov.currencyconverter
 
-
-import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
 import org.junit.Test
 import org.junit.runner.RunWith
-
 import org.junit.Assert.*
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.Retrofit
-
 import ru.mironov.currencyconverter.repository.EncryptedDataShared
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
 import ru.mironov.currencyconverter.retrofit.JsonObject
 import javax.inject.Inject
 import org.junit.Before
-import ru.mironov.currencyconverter.di.AppComponent
-import ru.mironov.currencyconverter.di.DaggerAppComponent
 import ru.mironov.currencyconverter.di.DaggerTestAppComponent
 import ru.mironov.currencyconverter.di.TestAppComponent
 
-
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 @RunWith(AndroidJUnit4::class)
 class InstrumentedTest {
 
@@ -65,7 +51,6 @@ class InstrumentedTest {
 
         assertEquals(str, value)
     }
-
 
     @Test
     fun apiTest() {

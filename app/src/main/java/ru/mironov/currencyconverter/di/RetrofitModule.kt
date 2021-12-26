@@ -4,16 +4,12 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
-import javax.inject.Singleton
 
 @Module
 object RetrofitModule {
-
-
 
     @Provides
     fun provideGsonBuilder(): Gson {
@@ -22,7 +18,6 @@ object RetrofitModule {
             .create()
     }
 
-
     @Provides
     fun provideRetrofit(): Retrofit.Builder {
         return Retrofit.Builder()
@@ -30,14 +25,12 @@ object RetrofitModule {
             .addConverterFactory(GsonConverterFactory.create())
     }
 
-
     @Provides
     fun provideBlogService(retrofit: Retrofit.Builder): CurrencyApi {
         return retrofit
             .build()
             .create(CurrencyApi::class.java)
     }
-
 }
 
 

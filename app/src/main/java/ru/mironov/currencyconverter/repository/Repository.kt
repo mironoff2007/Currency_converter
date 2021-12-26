@@ -1,12 +1,14 @@
 package ru.mironov.currencyconverter.repository
 
-import ru.mironov.currencyconverter.retrofit.CurrencyApi
-import javax.inject.Inject
 
+import retrofit2.Call
+import ru.mironov.currencyconverter.retrofit.CurrencyApi
+import ru.mironov.currencyconverter.retrofit.JsonObject
+import javax.inject.Inject
 
 class Repository @Inject constructor (var encryptedDataShared: EncryptedDataShared, var retrofit: CurrencyApi) {
 
-    val API_KEY="API_KEY"
+    private val API_KEY="API_KEY"
 
     fun isApiKeySaved():Boolean{
         return !encryptedDataShared.getString(API_KEY).isNullOrBlank()
@@ -14,5 +16,13 @@ class Repository @Inject constructor (var encryptedDataShared: EncryptedDataShar
 
     fun setApiKey(key:String){
         encryptedDataShared.saveString(key,API_KEY)
+    }
+
+    fun getApiKey(key:String):String?{
+        return encryptedDataShared.getString(API_KEY)
+    }
+
+    fun getObjectFromNetwork(name:String): Call<JsonObject?>? {
+       return  retrofit.getRates(getApiKey(API_KEY).toString(),name)
     }
 }
