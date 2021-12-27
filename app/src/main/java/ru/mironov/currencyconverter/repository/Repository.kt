@@ -18,11 +18,11 @@ class Repository @Inject constructor (var encryptedDataShared: EncryptedDataShar
         encryptedDataShared.saveString(key,API_KEY)
     }
 
-    fun getApiKey(key:String):String?{
+    fun getApiKey():String?{
         return encryptedDataShared.getString(API_KEY)
     }
 
     fun getObjectFromNetwork(name:String): Call<JsonRates?>? {
-       return  retrofit.getRates(getApiKey(API_KEY).toString(),name)
+       return  retrofit.getRates(getApiKey().toString(),name)
     }
 }
