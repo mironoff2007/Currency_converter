@@ -7,6 +7,9 @@ import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
+import ru.mironov.currencyconverter.util.DateDeserializer
+import java.util.*
+
 
 @Module
 object RetrofitModule {
@@ -22,7 +25,12 @@ object RetrofitModule {
     fun provideRetrofit(): Retrofit.Builder {
         return Retrofit.Builder()
             .baseUrl("https://freecurrencyapi.net/api/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(
+                GsonConverterFactory.create(
+                    GsonBuilder().serializeNulls()
+                        .create()
+                )
+            )
     }
 
     @Provides

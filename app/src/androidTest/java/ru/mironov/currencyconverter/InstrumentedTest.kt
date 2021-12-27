@@ -9,11 +9,12 @@ import retrofit2.Call
 import retrofit2.Response
 import ru.mironov.currencyconverter.repository.EncryptedDataShared
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
-import ru.mironov.currencyconverter.retrofit.JsonObject
+import ru.mironov.currencyconverter.retrofit.JsonRates
 import javax.inject.Inject
 import org.junit.Before
 import ru.mironov.currencyconverter.di.DaggerTestAppComponent
 import ru.mironov.currencyconverter.di.TestAppComponent
+import ru.mironov.currencyconverter.retrofit.JsonHistory
 
 @RunWith(AndroidJUnit4::class)
 class InstrumentedTest {
@@ -53,14 +54,27 @@ class InstrumentedTest {
     }
 
     @Test
-    fun apiTest() {
+    fun apiRatesTest() {
         val baseCurrency = "EUR"
 
-        val call: Call<JsonObject?> =
+        val call: Call<JsonRates?> =
             retrofit.getRates("c5389740-6041-11ec-9110-35b9a6bda6ab", baseCurrency)
 
-        val response: Response<JsonObject?> = call!!.execute()
-        var body = response.body() as JsonObject
+        val response: Response<JsonRates?> = call!!.execute()
+        var body = response.body() as JsonRates
+
+        assertEquals(true, body.getBaseCurrency() == baseCurrency)
+    }
+
+    @Test
+    fun apiHistoryTest() {
+        val baseCurrency = "EUR"
+
+        val call: Call<JsonHistory?> =
+            retrofit.getHistory("c5389740-6041-11ec-9110-35b9a6bda6ab", baseCurrency,"2021-10-27","2021-12-27")
+
+        val response: Response<JsonHistory?> = call!!.execute()
+        var body = response.body() as JsonHistory
 
         assertEquals(true, body.getBaseCurrency() == baseCurrency)
     }

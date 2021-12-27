@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.mironov.currencyconverter.repository.Repository
-import ru.mironov.currencyconverter.retrofit.JsonObject
+import ru.mironov.currencyconverter.retrofit.JsonRates
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
 
     var mutableStatus = MutableLiveData<Status>()
 
-    private var ratesObject: JsonObject? = null
+    private var ratesObject: JsonRates? = null
 
     var responseCurrency: String? = null
 
@@ -30,10 +30,10 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
     fun getCurrencyRate(name: String) {
         mutableStatus.postValue(Status.LOADING)
         repository.getObjectFromNetwork(name)
-            ?.enqueue(object : Callback<JsonObject?> {
+            ?.enqueue(object : Callback<JsonRates?> {
                 override fun onResponse(
-                    call: Call<JsonObject?>,
-                    response: Response<JsonObject?>
+                    call: Call<JsonRates?>,
+                    response: Response<JsonRates?>
                 ) {
                     if (response.body() != null) {
                         viewModelScope.launch(Dispatchers.Default) {
@@ -71,7 +71,7 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                     }
                 }
 
-                override fun onFailure(call: Call<JsonObject?>, t: Throwable) {
+                override fun onFailure(call: Call<JsonRates?>, t: Throwable) {
                     mutableStatus.postValue(Status.ERROR)
                 }
             })

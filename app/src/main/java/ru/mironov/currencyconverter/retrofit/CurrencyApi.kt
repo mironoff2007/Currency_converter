@@ -12,5 +12,13 @@ interface CurrencyApi {
     fun getRates(
         @Query("apikey") apiKey: String,
         @Query("base_currency") baseCurrency: String,
-    ): Call<JsonObject?>
+    ): Call<JsonRates?>
+
+    @GET("historical")
+    fun getHistory(
+        @Query("apikey") apiKey: String,
+        @Query("base_currency") baseCurrency: String,
+        @Query("date_from") date_from: String,
+        @Query("date_to") date_to: String,
+    ): Call<JsonHistory?>
 }
