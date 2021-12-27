@@ -70,10 +70,12 @@ class GraphFragment : Fragment() {
                 month += 1
                 val date: String = makeDateString(day, month, year)
                 binding.dateToButton.text = date
+                datePickerDialogFrom?.datePicker?.maxDate =getDate(day-1,month,year).time
             }
         datePickerDialogTo =
             DatePickerDialog(requireContext(), style, dateSetListenerTo, year, month, day)
         datePickerDialogTo?.datePicker?.maxDate = System.currentTimeMillis()
+
 
         //Set from date
         dateSetListenerFrom =
@@ -82,14 +84,15 @@ class GraphFragment : Fragment() {
                 month += 1
                 val date: String = makeDateString(day, month, year)
                 binding.dateFromButton.text = date
+                datePickerDialogTo?.datePicker?.minDate =getDate(day+1,month,year).time
             }
 
-        binding.dateFromButton.text =  makeDateString(day,month+1,year-1)
+        binding.dateFromButton.text =  makeDateString(day,month,year)
 
         datePickerDialogFrom =
-            DatePickerDialog(requireContext(), style, dateSetListenerFrom, year, month, day)
+            DatePickerDialog(requireContext(), style, dateSetListenerFrom, year, month-1, day)
         datePickerDialogFrom?.datePicker?.minDate = SimpleDateFormat(PATTERN_DATE_FORMAT).parse(MIN_API_DATE).time
-        datePickerDialogTo?.datePicker?.maxDate = System.currentTimeMillis()
+        datePickerDialogFrom?.datePicker?.maxDate = System.currentTimeMillis().minus(86400000)
 
     }
 
@@ -98,6 +101,10 @@ class GraphFragment : Fragment() {
     private fun makeDateString(day: Int, month: Int, year: Int): String {
         val date=SimpleDateFormat(PATTERN_DATE_FORMAT).parse("$year-$month-$day")
         return SimpleDateFormat(CUSTOM_DATE_FORMAT).format(date)
+    }
+
+    private fun getDate(day: Int, month: Int, year: Int): Date {
+        return SimpleDateFormat(PATTERN_DATE_FORMAT).parse("$year-$month-$day")
     }
 
     override fun onDestroy() {
