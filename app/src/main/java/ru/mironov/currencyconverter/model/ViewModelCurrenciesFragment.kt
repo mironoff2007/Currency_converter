@@ -55,8 +55,9 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                                 )
                                 //Set currencies to convert to
                                 ratesObject?.getRates()?.forEach { cur ->
+                                    if(cur.key!=ratesObject?.getBaseCurrency().toString()){
                                     arrayRates.add(CurrencyRate(cur.key, cur.value))
-                                    arrayNames.add(cur.key)
+                                    arrayNames.add(cur.key)}
                                 }
 
                                 repository.saveCurrenciesNames(arrayNames)
