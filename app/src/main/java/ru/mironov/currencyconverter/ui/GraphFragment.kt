@@ -9,11 +9,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
+import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
+import ru.mironov.currencyconverter.model.ViewModelGraphFragment
+import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
+import ru.mironov.currencyconverter.repository.Repository
+import ru.mironov.currencyconverter.ui.spinner.CustomAdapter
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 
 class GraphFragment : Fragment() {
@@ -23,6 +30,9 @@ class GraphFragment : Fragment() {
         private const val PATTERN_DATE_FORMAT = "yyyy-MM-dd"
         private const val MIN_API_DATE = "1999-1-1"
     }
+
+
+    private lateinit var viewModel: ViewModelGraphFragment
 
     private var _binding: FragmentGraphBinding? = null
 
@@ -47,12 +57,36 @@ class GraphFragment : Fragment() {
 
         _binding = FragmentGraphBinding.inflate(inflater, container, false)
 
+        viewModel = requireContext().appComponent.factory.create(ViewModelGraphFragment::class.java)
+
         binding.dateToButton.setOnClickListener { datePickerDialogTo?.show() }
         binding.dateFromButton.setOnClickListener { datePickerDialogFrom?.show() }
 
         initDatePickers()
+        initSpinner()
 
         return binding.root
+    }
+
+   fun initSpinner(){
+        val mCustomAdapter =
+            CustomAdapter(requireContext(),  viewModel.getCurrenciesNames())
+        //Spinner From
+        binding.spinner.adapter = mCustomAdapter
+        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                i: Int,
+                l: Long
+            ) {
+
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+
+            }
+        }
     }
 
     private fun initDatePickers() {

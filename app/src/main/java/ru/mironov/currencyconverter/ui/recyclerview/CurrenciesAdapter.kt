@@ -1,4 +1,4 @@
-package ru.mironov.currencyconverter.ui
+package ru.mironov.currencyconverter.ui.recyclerview
 
 import android.text.InputType
 import android.view.LayoutInflater

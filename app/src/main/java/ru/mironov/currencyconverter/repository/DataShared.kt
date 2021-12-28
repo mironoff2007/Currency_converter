@@ -17,14 +17,18 @@ class DataShared(context: Context, name: String) {
         editor.putInt(Companion.NUMBER_OF_CURRENCIES, names.size).apply()
         var i = 0
         names.forEach() {
-            editor.putString(CURRENCY_NAME_KEY + i, it)
+            editor.putString(CURRENCY_NAME_KEY + i, it).apply()
             i++
         }
     }
 
+    fun getCurrenciesNumber():Int {
+        return pref.getInt(Companion.NUMBER_OF_CURRENCIES, 0)
+    }
+
     fun getCurrenciesNames(): ArrayList<String> {
         val arrayNames = ArrayList<String>()
-        val n = pref.getInt(Companion.NUMBER_OF_CURRENCIES, 0)
+        val n = pref.getInt(Companion.NUMBER_OF_CURRENCIES, 0)-1
         for (i in 0..n) {
             arrayNames.add(pref.getString(CURRENCY_NAME_KEY + i, "")!!)
         }

@@ -20,28 +20,31 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.mironov.currencyconverter.model.CurrencyRate
-import ru.mironov.currencyconverter.model.Status
-import ru.mironov.currencyconverter.util.CurrencyDiffUtilCallback
 import ru.mironov.currency_converter.util.FormatNumbers.formatDoubleToString
 import ru.mironov.currency_converter.util.FormatNumbers.getDoubleFromText
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentCurrenciesBinding
+import ru.mironov.currencyconverter.model.CurrencyRate
+import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
 import ru.mironov.currencyconverter.repository.Repository
+import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesAdapter
+import ru.mironov.currencyconverter.ui.recyclerview.CurrencyViewHolder
+import ru.mironov.currencyconverter.util.CurrencyDiffUtilCallback
 import ru.mironov.currencyconverter.util.FlagSetter.setFlag
 import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.fixedRateTimer
 
-class CurrenciesFragment: Fragment() {
+class CurrenciesFragment : Fragment() {
 
     @Inject
     lateinit var repository: Repository
 
     private lateinit var viewModel: ViewModelCurrenciesFragment
 
-    private var _binding: FragmentCurrenciesBinding?=null
+    private var _binding: FragmentCurrenciesBinding? = null
 
     private val binding get() = _binding!!
 
@@ -85,7 +88,8 @@ class CurrenciesFragment: Fragment() {
 
         _binding = FragmentCurrenciesBinding.inflate(inflater, container, false)
 
-        viewModel = requireContext().appComponent.factory.create(ViewModelCurrenciesFragment::class.java)
+        viewModel =
+            requireContext().appComponent.factory.create(ViewModelCurrenciesFragment::class.java)
 
         adapterSetup()
         setupObserver()
@@ -93,9 +97,11 @@ class CurrenciesFragment: Fragment() {
 
 
         viewModel.getCurrencyRate(
-            binding.firstRow.currencyName.text.toString())
-                    /*
+            binding.firstRow.currencyName.text.toString()
+        )
+
         //Start timer
+        /*
         timerJob = viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
             fixedRateTimer("timer", false, 0L, 1000)
             {
@@ -110,8 +116,9 @@ class CurrenciesFragment: Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        _binding=null
+        _binding = null
     }
+
     private fun setupFirstRaw(currencyRate: CurrencyRate) {
         binding.firstRow.currencyRate.textLocale = locale
         binding.firstRow.currencyRate.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL

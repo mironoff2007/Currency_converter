@@ -27,4 +27,13 @@ class Repository @Inject constructor (var dataShared: DataShared,var encryptedDa
     fun getObjectFromNetwork(name:String): Call<JsonRates?>? {
        return  retrofit.getRates(getApiKey().toString(),name)
     }
+
+    fun saveCurrenciesNames(arrayNames: ArrayList<String>) {
+        //val n =dataShared.getCurrenciesNumber()
+            dataShared.saveCurrenciesNames(arrayNames)
+    }
+
+    fun getCurrenciesNames(): ArrayList<String> {
+        return dataShared.getCurrenciesNames()
+    }
 }

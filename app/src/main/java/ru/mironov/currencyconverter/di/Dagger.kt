@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.mironov.currencyconverter.MainActivity
 import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
+import ru.mironov.currencyconverter.model.ViewModelGraphFragment
 import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
 import ru.mironov.currencyconverter.model.ViewModelMainActivity
 import ru.mironov.currencyconverter.repository.DataShared
@@ -81,6 +82,10 @@ interface AppBindsModule {
     @Binds
     @[IntoMap ViewModelKey(ViewModelCurrenciesFragment::class)]
     fun provideViewModelCurrenciesFragment(viewModelCurrenciesFragment: ViewModelCurrenciesFragment): ViewModel
+
+    @Binds
+    @[IntoMap ViewModelKey(ViewModelGraphFragment::class)]
+    fun provideViewModelGraphFragment(viewModelGraphFragment: ViewModelGraphFragment): ViewModel
 
 }
 

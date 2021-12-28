@@ -40,7 +40,11 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                             ratesObject = response.body()
 
                             if (arrayRates.isEmpty()) {
+                                val arrayNames= ArrayList<String>()
+
                                 responseCurrency = ratesObject?.getBaseCurrency().toString()
+
+                                arrayNames.add(responseCurrency!!)
 
                                 //First currency to convert from
                                 arrayRates.add(
@@ -50,10 +54,12 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                                     )
                                 )
                                 //Set currencies to convert to
-
                                 ratesObject?.getRates()?.forEach { cur ->
                                     arrayRates.add(CurrencyRate(cur.key, cur.value))
+                                    arrayNames.add(cur.key)
                                 }
+
+                                repository.saveCurrenciesNames(arrayNames)
                             } else {
                                 synchronized(arrayRates) {
                                     arrayRates.forEach { it ->
@@ -64,6 +70,8 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                                     }
                                 }
                             }
+
+
                             mutableStatus.postValue(Status.DATA)
                         }
                     } else {
