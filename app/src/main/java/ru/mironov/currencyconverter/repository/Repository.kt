@@ -6,9 +6,11 @@ import ru.mironov.currencyconverter.retrofit.CurrencyApi
 import ru.mironov.currencyconverter.retrofit.JsonRates
 import javax.inject.Inject
 
-class Repository @Inject constructor (var encryptedDataShared: EncryptedDataShared, var retrofit: CurrencyApi) {
+class Repository @Inject constructor (var dataShared: DataShared,var encryptedDataShared: EncryptedDataShared, var retrofit: CurrencyApi) {
 
-    private val API_KEY="API_KEY"
+    companion object {
+    private const val API_KEY="API_KEY"
+    }
 
     fun isApiKeySaved():Boolean{
         return !encryptedDataShared.getString(API_KEY).isNullOrBlank()

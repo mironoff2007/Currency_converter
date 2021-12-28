@@ -12,6 +12,7 @@ import ru.mironov.currencyconverter.MainActivity
 import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
 import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
 import ru.mironov.currencyconverter.model.ViewModelMainActivity
+import ru.mironov.currencyconverter.repository.DataShared
 import ru.mironov.currencyconverter.repository.EncryptedDataShared
 import ru.mironov.currencyconverter.repository.Repository
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
@@ -49,13 +50,18 @@ interface AppComponent  {
 class AppModule() {
 
     @Provides
-    fun provideRepository(encryptedDataShared:EncryptedDataShared,retrofit:CurrencyApi): Repository {
-        return Repository(encryptedDataShared,retrofit)
+    fun provideRepository(dataShared:DataShared,encryptedDataShared:EncryptedDataShared,retrofit:CurrencyApi): Repository {
+        return Repository(dataShared,encryptedDataShared,retrofit)
     }
 
     @Provides
-    fun provideDataShared(context:Context): EncryptedDataShared {
+    fun provideEncryptedDataShared(context:Context): EncryptedDataShared {
         return EncryptedDataShared(context,"data_shared")
+    }
+
+    @Provides
+    fun provideDataShared(context:Context): DataShared {
+        return DataShared(context,"cache")
     }
 
 }

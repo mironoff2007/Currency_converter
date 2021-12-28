@@ -18,9 +18,11 @@ import java.util.*
 
 class GraphFragment : Fragment() {
 
-    private val CUSTOM_DATE_FORMAT="dd-MM-yyyy"
-    private val PATTERN_DATE_FORMAT="yyyy-MM-dd"
-    private val MIN_API_DATE="1999-1-1"
+    companion object {
+        private const val CUSTOM_DATE_FORMAT = "dd-MM-yyyy"
+        private const val PATTERN_DATE_FORMAT = "yyyy-MM-dd"
+        private const val MIN_API_DATE = "1999-1-1"
+    }
 
     private var _binding: FragmentGraphBinding? = null
 
