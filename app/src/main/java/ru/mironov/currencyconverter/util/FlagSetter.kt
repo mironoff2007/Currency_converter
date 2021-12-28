@@ -9,7 +9,7 @@ object FlagSetter {
     fun setFlag(name: String, imageView: ImageView) {
         //Lib flags names have 2 characters, but API have 3
         if (name.length > 2) {
-            val curName = name.substring(0, 2).toLowerCase(Locale.ENGLISH)
+            val curName = name.toLowerCase(Locale.ENGLISH)
             val id=imageView.context.resources.getIdentifier(
                 curName,
                 "drawable",
