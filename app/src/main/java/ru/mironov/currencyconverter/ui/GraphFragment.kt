@@ -132,7 +132,6 @@ class GraphFragment : Fragment() {
 
     }
 
-
     @SuppressLint("SimpleDateFormat")
     private fun makeDateString(day: Int, month: Int, year: Int): String {
         val date=SimpleDateFormat(PATTERN_DATE_FORMAT).parse("$year-$month-$day")
