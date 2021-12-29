@@ -1,26 +1,40 @@
 package ru.mironov.currencyconverter.ui
 
+
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
-
+import android.graphics.Color
+import android.graphics.DashPathEffect
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.LimitLine
+import com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IFillFormatter
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.utils.Utils
+import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
-import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
 import ru.mironov.currencyconverter.model.ViewModelGraphFragment
-import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
-import ru.mironov.currencyconverter.repository.Repository
 import ru.mironov.currencyconverter.ui.spinner.CustomAdapter
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 
 class GraphFragment : Fragment() {
@@ -41,8 +55,10 @@ class GraphFragment : Fragment() {
     private var datePickerDialogTo: DatePickerDialog? = null
     private var datePickerDialogFrom: DatePickerDialog? = null
 
-    private var dateSetListenerTo:OnDateSetListener?=null
-    private var dateSetListenerFrom:OnDateSetListener?=null
+    private var dateSetListenerTo: OnDateSetListener? = null
+    private var dateSetListenerFrom: OnDateSetListener? = null
+
+    private lateinit var chart: LineChart
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,12 +81,14 @@ class GraphFragment : Fragment() {
         initDatePickers()
         initSpinner()
 
+
+        setupChart()
         return binding.root
     }
 
-   fun initSpinner(){
+    fun initSpinner() {
         val mCustomAdapter =
-            CustomAdapter(requireContext(),  viewModel.getCurrenciesNames())
+            CustomAdapter(requireContext(), viewModel.getCurrenciesNames())
         //Spinner From
         binding.spinner.adapter = mCustomAdapter
         binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -98,15 +116,15 @@ class GraphFragment : Fragment() {
         val style: Int = AlertDialog.THEME_HOLO_LIGHT
 
         //Set to date
-        binding.dateToButton.text =  makeDateString(day,month+1,year)
+        binding.dateToButton.text = makeDateString(day, month + 1, year)
 
-       dateSetListenerTo =
+        dateSetListenerTo =
             OnDateSetListener { datePicker, year, month, day ->
                 var month = month
                 month += 1
                 val date: String = makeDateString(day, month, year)
                 binding.dateToButton.text = date
-                datePickerDialogFrom?.datePicker?.maxDate =getDate(day-1,month,year).time
+                datePickerDialogFrom?.datePicker?.maxDate = getDate(day - 1, month, year).time
             }
         datePickerDialogTo =
             DatePickerDialog(requireContext(), style, dateSetListenerTo, year, month, day)
@@ -120,21 +138,22 @@ class GraphFragment : Fragment() {
                 month += 1
                 val date: String = makeDateString(day, month, year)
                 binding.dateFromButton.text = date
-                datePickerDialogTo?.datePicker?.minDate =getDate(day+1,month,year).time
+                datePickerDialogTo?.datePicker?.minDate = getDate(day + 1, month, year).time
             }
 
-        binding.dateFromButton.text =  makeDateString(day,month,year)
+        binding.dateFromButton.text = makeDateString(day, month, year)
 
         datePickerDialogFrom =
-            DatePickerDialog(requireContext(), style, dateSetListenerFrom, year, month-1, day)
-        datePickerDialogFrom?.datePicker?.minDate = SimpleDateFormat(PATTERN_DATE_FORMAT).parse(MIN_API_DATE).time
+            DatePickerDialog(requireContext(), style, dateSetListenerFrom, year, month - 1, day)
+        datePickerDialogFrom?.datePicker?.minDate =
+            SimpleDateFormat(PATTERN_DATE_FORMAT).parse(MIN_API_DATE).time
         datePickerDialogFrom?.datePicker?.maxDate = System.currentTimeMillis().minus(86400000)
 
     }
 
     @SuppressLint("SimpleDateFormat")
     private fun makeDateString(day: Int, month: Int, year: Int): String {
-        val date=SimpleDateFormat(PATTERN_DATE_FORMAT).parse("$year-$month-$day")
+        val date = SimpleDateFormat(PATTERN_DATE_FORMAT).parse("$year-$month-$day")
         return SimpleDateFormat(CUSTOM_DATE_FORMAT).format(date)
     }
 
@@ -142,12 +161,196 @@ class GraphFragment : Fragment() {
         return SimpleDateFormat(PATTERN_DATE_FORMAT).parse("$year-$month-$day")
     }
 
+    //MPChart
+    fun setupChart() {
+        /* getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+             WindowManager.LayoutParams.FLAG_FULLSCREEN);
+         setContentView(R.layout.activity_linechart);
+         */
+
+
+        // // Chart Style // //
+        chart = binding.chart1
+
+        // background color
+        chart.setBackgroundColor(Color.WHITE);
+
+        // disable description text
+        chart.description.isEnabled = false;
+
+        // enable touch gestures
+        chart.setTouchEnabled(true);
+
+        // set listeners
+        //chart.setOnChartValueSelectedListener(this);
+        chart.setDrawGridBackground(false);
+
+        // create marker to display box when values are selected
+        val mv = MyMarkerView(requireContext(), R.layout.custom_marker_view);
+
+        // Set the marker to the chart
+        mv.setChartView(chart);
+        chart.setMarker(mv);
+
+        // enable scaling and dragging
+        chart.setDragEnabled(true);
+        chart.setScaleEnabled(true);
+        // chart.setScaleXEnabled(true);
+        // chart.setScaleYEnabled(true);
+
+        // force pinch zoom along both axis
+        chart.setPinchZoom(true);
+
+
+        // // X-Axis Style // //
+        var xAxis: XAxis = chart.xAxis
+
+        // vertical grid lines
+        xAxis.enableGridDashedLine(10f, 10f, 0f)
+
+
+        // // Y-Axis Style // //
+        var yAxis: YAxis = chart.axisLeft
+
+        // disable dual axis (only use LEFT axis)
+        chart.axisRight.isEnabled = false
+
+        // horizontal grid lines
+        yAxis.enableGridDashedLine(10f, 10f, 0f)
+
+        // axis range
+        yAxis.axisMaximum = 200f
+        yAxis.axisMinimum = -50f
+
+
+        // // Create Limit Lines // //
+        val tfRegular = Typeface.createFromAsset(requireContext().assets, "OpenSans-Regular.ttf");
+        val tfLight = Typeface.createFromAsset(requireContext().assets, "OpenSans-Light.ttf");
+
+        val llXAxis = LimitLine(9f, "Index 10")
+        llXAxis.lineWidth = 4f
+        llXAxis.enableDashedLine(10f, 10f, 0f)
+        llXAxis.labelPosition = LimitLabelPosition.RIGHT_BOTTOM
+        llXAxis.textSize = 10f
+        llXAxis.typeface = tfRegular
+
+        val ll1 = LimitLine(150f, "Upper Limit")
+        ll1.lineWidth = 4f
+        ll1.enableDashedLine(10f, 10f, 0f)
+        ll1.labelPosition = LimitLabelPosition.RIGHT_TOP
+        ll1.textSize = 10f
+        ll1.typeface = tfRegular
+
+        val ll2 = LimitLine(-30f, "Lower Limit")
+        ll2.lineWidth = 4f
+        ll2.enableDashedLine(10f, 10f, 0f)
+        ll2.labelPosition = LimitLabelPosition.RIGHT_BOTTOM
+        ll2.textSize = 10f
+        ll2.typeface = tfRegular
+
+        // draw limit lines behind data instead of on top
+
+        // draw limit lines behind data instead of on top
+        yAxis.setDrawLimitLinesBehindData(true)
+        xAxis.setDrawLimitLinesBehindData(true)
+
+        // add limit lines
+
+        // add limit lines
+        yAxis.addLimitLine(ll1)
+        yAxis.addLimitLine(ll2)
+        //xAxis.addLimitLine(llXAxis);
+
+
+        setData(45, 180);
+
+        // draw points over time
+        chart.animateX(1500);
+
+        // get the legend (only possible after setting data)
+        val l: Legend = chart.legend;
+
+        // draw legend entries as lines
+        l.form = Legend.LegendForm.LINE;
+    }
+
+    private fun setData(count: Int, range: Int) {
+        val values: ArrayList<Entry> = ArrayList()
+
+        for (i in 0 until count) {
+            val v = (Math.random() * range).toFloat() - 30
+            values.add(Entry(i.toFloat(), v))
+        }
+
+        val set1: LineDataSet
+        if (chart.data != null &&
+            chart.data.dataSetCount > 0
+        ) {
+            set1 = chart.data.getDataSetByIndex(0) as LineDataSet
+            set1.values = values
+            set1.notifyDataSetChanged()
+            chart.data.notifyDataChanged()
+            chart.notifyDataSetChanged()
+        } else {
+            // create a dataset and give it a type
+            set1 = LineDataSet(values, "DataSet 1")
+            set1.setDrawIcons(false)
+
+            // draw dashed line
+            set1.enableDashedLine(10f, 5f, 0f)
+
+            // black lines and points
+            set1.color = Color.BLACK
+            set1.setCircleColor(Color.BLACK)
+
+            // line thickness and point size
+            set1.lineWidth = 1f
+            set1.circleRadius = 3f
+
+            // draw points as solid circles
+            set1.setDrawCircleHole(false)
+
+            // customize legend entry
+            set1.formLineWidth = 1f
+            set1.formLineDashEffect = DashPathEffect(floatArrayOf(10f, 5f), 0f)
+            set1.formSize = 15f
+
+            // text size of values
+            set1.valueTextSize = 9f
+
+            // draw selection line as dashed
+            set1.enableDashedHighlightLine(10f, 5f, 0f)
+
+            // set the filled area
+            set1.setDrawFilled(true)
+            set1.fillFormatter =
+                IFillFormatter { dataSet, dataProvider -> chart.axisLeft.axisMinimum }
+
+            // set color of filled area
+            if (Utils.getSDKInt() >= 18) {
+                // drawables only supported on api level 18 and above
+                val drawable = ContextCompat.getDrawable(requireContext(), ru.mironov.currencyconverter.R.drawable.fade_red)
+                set1.fillDrawable = drawable
+            } else {
+                set1.fillColor = Color.BLACK
+            }
+            val dataSets: ArrayList<ILineDataSet> = ArrayList()
+            dataSets.add(set1) // add the data sets
+
+            // create a data object with the data sets
+            val data = LineData(dataSets)
+
+            // set data
+            chart.data = data
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        datePickerDialogTo=null
-        datePickerDialogFrom=null
-        dateSetListenerTo=null
-        dateSetListenerFrom=null
+        datePickerDialogTo = null
+        datePickerDialogFrom = null
+        dateSetListenerTo = null
+        dateSetListenerFrom = null
     }
 }
