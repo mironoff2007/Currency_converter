@@ -329,7 +329,7 @@ class GraphFragment : Fragment() {
             // set color of filled area
             if (Utils.getSDKInt() >= 18) {
                 // drawables only supported on api level 18 and above
-                val drawable = ContextCompat.getDrawable(requireContext(), ru.mironov.currencyconverter.R.drawable.fade_red)
+                val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.fade_red)
                 set1.fillDrawable = drawable
             } else {
                 set1.fillColor = Color.BLACK
