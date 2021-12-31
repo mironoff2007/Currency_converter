@@ -47,6 +47,7 @@ class GraphFragment : Fragment() {
         private const val UI_DATE_FORMAT = "dd-MM-yyyy"
         private const val PATTERN_DATE_FORMAT = "yyyy-MM-dd"
         private const val MIN_API_DATE = "1999-1-1"
+        private const val DAY_MILLIS = 86400000
     }
 
     private lateinit var viewModel: ViewModelGraphFragment
@@ -149,13 +150,15 @@ class GraphFragment : Fragment() {
                 datePickerDialogTo?.datePicker?.minDate = getDate(day + 1, month, year).time
             }
 
-        binding.dateFromButton.text = makeUiDateString(day, month, year)
+
+        //Set initial From date
+        binding.dateFromButton.text = makeUiDateString(day, month, year - 5)
 
         datePickerDialogFrom =
-            DatePickerDialog(requireContext(), style, dateSetListenerFrom, year, month - 1, day)
+            DatePickerDialog(requireContext(), style, dateSetListenerFrom, year, month, day)
         datePickerDialogFrom?.datePicker?.minDate =
             SimpleDateFormat(PATTERN_DATE_FORMAT).parse(MIN_API_DATE).time
-        datePickerDialogFrom?.datePicker?.maxDate = System.currentTimeMillis().minus(86400000)
+        datePickerDialogFrom?.datePicker?.maxDate = System.currentTimeMillis().minus(DAY_MILLIS)
 
     }
 
@@ -279,83 +282,95 @@ class GraphFragment : Fragment() {
     }
 
     private fun setData() {
-        val values: ArrayList<Entry> = ArrayList()
+        //Prepare data for UI
+        viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
+            val values: ArrayList<Entry> = ArrayList()
 
-        var i=0f
+            var i = 0f
 
-        var maxValue=0f
-        viewModel.arrayHistory.forEach(){ it->
-            if(it.rate>maxValue){
-                maxValue=it.rate.toFloat()
+            var maxValue = 0f
+            viewModel.arrayHistory.forEach() { it ->
+                if (it.rate > maxValue) {
+                    maxValue = it.rate.toFloat()
+                }
+                values.add(Entry(i, it.rate.toFloat()))
+                i++
             }
-            values.add(Entry(i ,it.rate.toFloat()))
-            i++
-        }
 
-        chart.axisLeft.axisMaximum=maxValue*1.1f
+            //Update UI
+            viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Main) {
 
-        val set1: LineDataSet
-        if (chart.data != null &&
-            chart.data.dataSetCount > 0
-        ) {
-            set1 = chart.data.getDataSetByIndex(0) as LineDataSet
-            set1.values = values
-            set1.notifyDataSetChanged()
-            chart.data.notifyDataChanged()
-            chart.notifyDataSetChanged()
-        } else {
-            // create a dataset and give it a type
-            set1 = LineDataSet(values, " to ")
-            set1.setDrawIcons(false)
+                chart.axisLeft.axisMaximum = maxValue * 1.1f
 
-            // draw dashed line
-            set1.enableDashedLine(10f, 5f, 0f)
+                val set1: LineDataSet
+                if (chart.data != null &&
+                    chart.data.dataSetCount > 0
+                ) {
+                    set1 = chart.data.getDataSetByIndex(0) as LineDataSet
+                    chart.invalidate()
+                    set1.values = values
+                    set1.notifyDataSetChanged()
+                    chart.data.notifyDataChanged()
+                    chart.notifyDataSetChanged()
 
-            // black lines and points
-            set1.color = Color.BLACK
-            set1.setCircleColor(Color.BLACK)
+                } else {
+                    // create a dataset and give it a type
+                    set1 = LineDataSet(values, " to ")
+                    set1.setDrawIcons(false)
 
-            // line thickness and point size
-            set1.lineWidth = 1f
-            set1.circleRadius = 3f
+                    // draw dashed line
+                    set1.enableDashedLine(10f, 5f, 0f)
 
-            // draw points as solid circles
-            set1.setDrawCircleHole(false)
+                    // black lines and points
+                    set1.color = Color.BLACK
+                    set1.setCircleColor(Color.BLACK)
 
-            // customize legend entry
-            set1.formLineWidth = 1f
-            set1.formLineDashEffect = DashPathEffect(floatArrayOf(10f, 5f), 0f)
-            set1.formSize = 15f
+                    // line thickness and point size
+                    set1.lineWidth = 1f
+                    set1.circleRadius = 3f
 
-            // text size of values
+                    // draw points as solid circles
+                    set1.setDrawCircleHole(false)
+                    set1.setDrawCircles(false)
 
-            set1.setDrawValues(false)
-            //set1.valueTextSize = 0f
-            
-            // draw selection line as dashed
-            set1.enableDashedHighlightLine(10f, 5f, 0f)
+                    // customize legend entry
+                    set1.formLineWidth = 1f
+                    set1.formLineDashEffect = DashPathEffect(floatArrayOf(10f, 5f), 0f)
+                    set1.formSize = 15f
 
-            // set the filled area
-            set1.setDrawFilled(true)
-            set1.fillFormatter =
-                IFillFormatter { dataSet, dataProvider -> chart.axisLeft.axisMinimum }
+                    // text size of values
 
-            // set color of filled area
-            if (Utils.getSDKInt() >= 18) {
-                // drawables only supported on api level 18 and above
-                val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.fade_red)
-                set1.fillDrawable = drawable
-            } else {
-                set1.fillColor = Color.BLACK
+                    set1.setDrawValues(false)
+                    //set1.valueTextSize = 0f
+
+                    // draw selection line as dashed
+                    set1.enableDashedHighlightLine(10f, 5f, 0f)
+
+                    // set the filled area
+                    set1.setDrawFilled(true)
+                    set1.fillFormatter =
+                        IFillFormatter { dataSet, dataProvider -> chart.axisLeft.axisMinimum }
+
+                    // set color of filled area
+                    if (Utils.getSDKInt() >= 18) {
+                        // drawables only supported on api level 18 and above
+                        val drawable =
+                            ContextCompat.getDrawable(requireContext(), R.drawable.fade_red)
+                        set1.fillDrawable = drawable
+                    } else {
+                        set1.fillColor = Color.BLACK
+                    }
+                    val dataSets: ArrayList<ILineDataSet> = ArrayList()
+                    dataSets.add(set1) // add the data sets
+
+                    // create a data object with the data sets
+                    val data = LineData(dataSets)
+
+                    // set data
+                    chart.data = data
+                    chart.invalidate()
+                }
             }
-            val dataSets: ArrayList<ILineDataSet> = ArrayList()
-            dataSets.add(set1) // add the data sets
-
-            // create a data object with the data sets
-            val data = LineData(dataSets)
-
-            // set data
-            chart.data = data
         }
     }
 

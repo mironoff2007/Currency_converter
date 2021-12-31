@@ -48,10 +48,7 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
                         viewModelScope.launch(Dispatchers.Default) {
                             ratesObject = response.body()
 
-                            if (arrayHistory.isEmpty()) {
-                                val arrayNames = ArrayList<String>()
-
-                                //responseCurrency = ratesObject?.getBaseCurrency().toString()
+                                arrayHistory.clear()
 
                                 //Set currencies to convert to
                                 ratesObject?.getData()?.forEach { it ->
@@ -63,8 +60,6 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
                                         )
                                     )
                                 }
-
-                            }
                             mutableStatus.postValue(Status.DATA)
                         }
                     } else {
