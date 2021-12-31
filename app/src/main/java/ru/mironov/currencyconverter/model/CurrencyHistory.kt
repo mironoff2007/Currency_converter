@@ -5,5 +5,5 @@ import java.util.*
 data class CurrencyHistory(
     var nameBaseCurrency:String,
     var date:Date,
-    var rate:Double?
+    var rate:Double
 )

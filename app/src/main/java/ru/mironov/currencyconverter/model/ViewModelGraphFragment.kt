@@ -59,7 +59,7 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
                                         CurrencyHistory(
                                             ratesObject?.getBaseCurrency().toString(),
                                             it.key,
-                                            it.value[nameConvCur]
+                                            it.value[nameConvCur] ?: 0.0
                                         )
                                     )
                                 }

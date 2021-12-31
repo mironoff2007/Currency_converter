@@ -12,8 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.coroutineScope
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LimitLine
@@ -26,9 +28,14 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IFillFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import ru.mironov.currency_converter.util.FormatNumbers
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
+import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.model.ViewModelGraphFragment
 import ru.mironov.currencyconverter.ui.spinner.CustomAdapter
 import java.text.SimpleDateFormat
@@ -75,10 +82,10 @@ class GraphFragment : Fragment() {
         binding.dateFromButton.setOnClickListener { datePickerDialogFrom?.show() }
 
         initDatePickers()
+        setupChart()
+        setupObserver()
         initSpinner()
 
-
-        setupChart()
         return binding.root
     }
 
@@ -159,7 +166,7 @@ class GraphFragment : Fragment() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun makeRequestDateString(date:String): String {
+    private fun makeRequestDateString(date: String): String {
         val date = SimpleDateFormat(UI_DATE_FORMAT).parse(date)
         return SimpleDateFormat(PATTERN_DATE_FORMAT).format(date)
     }
@@ -174,10 +181,9 @@ class GraphFragment : Fragment() {
              WindowManager.LayoutParams.FLAG_FULLSCREEN);
          setContentView(R.layout.activity_linechart);
          */
-
-
         // // Chart Style // //
         chart = binding.chart1
+
 
         // background color
         chart.setBackgroundColor(Color.WHITE);
@@ -226,8 +232,7 @@ class GraphFragment : Fragment() {
         yAxis.enableGridDashedLine(10f, 10f, 0f)
 
         // axis range
-        yAxis.axisMaximum = 200f
-        yAxis.axisMinimum = -50f
+        yAxis.axisMinimum = 0f
 
 
         // // Create Limit Lines // //
@@ -241,35 +246,27 @@ class GraphFragment : Fragment() {
         llXAxis.textSize = 10f
         llXAxis.typeface = tfRegular
 
+        /*
         val ll1 = LimitLine(150f, "Upper Limit")
         ll1.lineWidth = 4f
         ll1.enableDashedLine(10f, 10f, 0f)
         ll1.labelPosition = LimitLabelPosition.RIGHT_TOP
         ll1.textSize = 10f
         ll1.typeface = tfRegular
-
-        val ll2 = LimitLine(-30f, "Lower Limit")
-        ll2.lineWidth = 4f
-        ll2.enableDashedLine(10f, 10f, 0f)
-        ll2.labelPosition = LimitLabelPosition.RIGHT_BOTTOM
-        ll2.textSize = 10f
-        ll2.typeface = tfRegular
+        */
 
         // draw limit lines behind data instead of on top
 
         // draw limit lines behind data instead of on top
-        yAxis.setDrawLimitLinesBehindData(true)
-        xAxis.setDrawLimitLinesBehindData(true)
+        //yAxis.setDrawLimitLinesBehindData(true)
+        //xAxis.setDrawLimitLinesBehindData(true)
 
         // add limit lines
 
         // add limit lines
-        yAxis.addLimitLine(ll1)
-        yAxis.addLimitLine(ll2)
+        //yAxis.addLimitLine(ll1)
+        //yAxis.addLimitLine(ll2)
         //xAxis.addLimitLine(llXAxis);
-
-
-        setData(45, 180);
 
         // draw points over time
         chart.animateX(1500);
@@ -281,13 +278,21 @@ class GraphFragment : Fragment() {
         l.form = Legend.LegendForm.LINE;
     }
 
-    private fun setData(count: Int, range: Int) {
+    private fun setData() {
         val values: ArrayList<Entry> = ArrayList()
 
-        for (i in 0 until count) {
-            val v = (Math.random() * range).toFloat() - 30
-            values.add(Entry(i.toFloat(), v))
+        var i=0f
+
+        var maxValue=0f
+        viewModel.arrayHistory.forEach(){ it->
+            if(it.rate>maxValue){
+                maxValue=it.rate.toFloat()
+            }
+            values.add(Entry(i ,it.rate.toFloat()))
+            i++
         }
+
+        chart.axisLeft.axisMaximum=maxValue*1.1f
 
         val set1: LineDataSet
         if (chart.data != null &&
@@ -300,7 +305,7 @@ class GraphFragment : Fragment() {
             chart.notifyDataSetChanged()
         } else {
             // create a dataset and give it a type
-            set1 = LineDataSet(values, "DataSet 1")
+            set1 = LineDataSet(values, " to ")
             set1.setDrawIcons(false)
 
             // draw dashed line
@@ -323,8 +328,10 @@ class GraphFragment : Fragment() {
             set1.formSize = 15f
 
             // text size of values
-            set1.valueTextSize = 9f
 
+            set1.setDrawValues(false)
+            //set1.valueTextSize = 0f
+            
             // draw selection line as dashed
             set1.enableDashedHighlightLine(10f, 5f, 0f)
 
@@ -349,6 +356,29 @@ class GraphFragment : Fragment() {
 
             // set data
             chart.data = data
+        }
+    }
+
+    @SuppressLint("ShowToast")
+    private fun setupObserver() {
+        viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
+            when (status) {
+                Status.DATA -> {
+                    setData()
+                    binding.progressBar.visibility = View.GONE
+                }
+                Status.LOADING -> {
+                    //Show progress bar only for long response
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+                    Toast.makeText(
+                        this.requireContext(),
+                        getString(R.string.error),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         }
     }
 
