@@ -28,7 +28,7 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
     private var ratesObject: JsonHistory? = null
 
     fun getCurrenciesNames(): ArrayList<String> {
-        return repository.getCurrenciesNames()
+        return repository.getCurrenciesNames().clone() as ArrayList<String>
     }
 
     fun getCurrencyHistory(

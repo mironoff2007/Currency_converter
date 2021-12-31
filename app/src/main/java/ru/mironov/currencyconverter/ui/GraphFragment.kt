@@ -29,9 +29,7 @@ import com.github.mikephil.charting.formatter.IFillFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.utils.Utils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.mironov.currency_converter.util.FormatNumbers
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
@@ -40,6 +38,7 @@ import ru.mironov.currencyconverter.model.ViewModelGraphFragment
 import ru.mironov.currencyconverter.ui.spinner.CustomAdapter
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class GraphFragment : Fragment() {
 
@@ -61,6 +60,13 @@ class GraphFragment : Fragment() {
 
     private var dateSetListenerTo: OnDateSetListener? = null
     private var dateSetListenerFrom: OnDateSetListener? = null
+
+    private var dateFromString:String=""
+    private var dateToString:String=""
+    private var currencyFrom:String=""
+    private var currencyTo:String=""
+
+    private lateinit var currenciesNames:ArrayList<String>
 
     private lateinit var chart: LineChart
 
@@ -85,35 +91,64 @@ class GraphFragment : Fragment() {
         initDatePickers()
         setupChart()
         setupObserver()
-        initSpinner()
+        initSpinners()
 
         return binding.root
     }
 
-    fun initSpinner() {
-        val mCustomAdapter =
-            CustomAdapter(requireContext(), viewModel.getCurrenciesNames())
+    private fun initSpinners() {
+
+        currenciesNames=viewModel.getCurrenciesNames()
+
+        val curFromAdapter =
+            CustomAdapter(requireContext(), currenciesNames)
         //Spinner From
-        binding.spinner.adapter = mCustomAdapter
-        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.spinnerFrom.adapter = curFromAdapter
+        binding.spinnerFrom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 adapterView: AdapterView<*>?,
                 view: View?,
                 i: Int,
                 l: Long
             ) {
-                viewModel.getCurrencyHistory(
-                    viewModel.getCurrenciesNames()[i],
-                    "RUB",
-                    makeRequestDateString(binding.dateFromButton.text.toString()),
-                    makeRequestDateString(binding.dateToButton.text.toString())
-                )
+                currencyFrom=currenciesNames[i]
+                updateGraph()
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
 
             }
         }
+
+        val curToAdapter =
+            CustomAdapter(requireContext(), currenciesNames)
+        //Spinner To
+        binding.spinnerTo.adapter = curToAdapter
+        binding.spinnerTo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                i: Int,
+                l: Long
+            ) {
+                currencyTo=currenciesNames[i]
+                updateGraph()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+
+            }
+        }
+    }
+
+    private fun updateGraph() {
+        if(currencyFrom!=currencyTo&&currencyFrom!=""&&currencyTo!=""){
+        viewModel.getCurrencyHistory(
+            currencyFrom,
+            currencyTo,
+            dateFromString,
+            dateToString
+        )}
     }
 
     private fun initDatePickers() {
@@ -126,6 +161,7 @@ class GraphFragment : Fragment() {
 
         //Set to date
         binding.dateToButton.text = makeUiDateString(day, month + 1, year)
+        dateToString = makeRequestDateString(binding.dateToButton.text.toString())
 
         dateSetListenerTo =
             OnDateSetListener { datePicker, year, month, day ->
@@ -134,11 +170,12 @@ class GraphFragment : Fragment() {
                 val date: String = makeUiDateString(day, month, year)
                 binding.dateToButton.text = date
                 datePickerDialogFrom?.datePicker?.maxDate = getDate(day - 1, month, year).time
+                dateToString=makeRequestDateString(binding.dateToButton.text.toString())
+                updateGraph()
             }
         datePickerDialogTo =
             DatePickerDialog(requireContext(), style, dateSetListenerTo, year, month, day)
         datePickerDialogTo?.datePicker?.maxDate = System.currentTimeMillis()
-
 
         //Set from date
         dateSetListenerFrom =
@@ -148,11 +185,13 @@ class GraphFragment : Fragment() {
                 val date: String = makeUiDateString(day, month, year)
                 binding.dateFromButton.text = date
                 datePickerDialogTo?.datePicker?.minDate = getDate(day + 1, month, year).time
+                dateFromString=makeRequestDateString(date)
+                updateGraph()
             }
 
-
         //Set initial From date
-        binding.dateFromButton.text = makeUiDateString(day, month, year - 5)
+        binding.dateFromButton.text = makeUiDateString(day, month, year - 1)
+        dateFromString = makeRequestDateString("$day-$month-"+(year-1))
 
         datePickerDialogFrom =
             DatePickerDialog(requireContext(), style, dateSetListenerFrom, year, month, day)

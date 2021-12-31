@@ -72,7 +72,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/spinnerFrom"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
@@ -80,6 +80,16 @@
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textDataTo" />
+
+    <Spinner
+        android:id="@+id/spinnerTo"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerFrom" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart1"
@@ -92,7 +102,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner"  />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerTo"  />
 
     <ProgressBar
         android:id="@+id/progressBar"

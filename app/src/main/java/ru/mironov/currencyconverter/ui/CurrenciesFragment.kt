@@ -48,7 +48,7 @@ class CurrenciesFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    val progressBarDelay: Long = 2000
+    private val progressBarDelay: Long = 500
 
     var errorToast: Toast? = null
 
