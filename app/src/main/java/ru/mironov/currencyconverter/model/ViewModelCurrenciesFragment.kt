@@ -29,7 +29,7 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
 
     fun getCurrencyRate(name: String) {
         mutableStatus.postValue(Status.LOADING)
-        repository.getObjectFromNetwork(name)
+        repository.getRatesFromNetwork(name)
             ?.enqueue(object : Callback<JsonRates?> {
                 override fun onResponse(
                     call: Call<JsonRates?>,

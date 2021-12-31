@@ -3,6 +3,7 @@ package ru.mironov.currencyconverter.repository
 
 import retrofit2.Call
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
+import ru.mironov.currencyconverter.retrofit.JsonHistory
 import ru.mironov.currencyconverter.retrofit.JsonRates
 import javax.inject.Inject
 
@@ -24,12 +25,15 @@ class Repository @Inject constructor (var dataShared: DataShared,var encryptedDa
         return encryptedDataShared.getString(API_KEY)
     }
 
-    fun getObjectFromNetwork(name:String): Call<JsonRates?>? {
+    fun getRatesFromNetwork(name:String): Call<JsonRates?>? {
        return  retrofit.getRates(getApiKey().toString(),name)
     }
 
+    fun getHistoryFromNetwork(name:String,dateFrom:String,dateTo:String): Call<JsonHistory?>? {
+        return  retrofit.getHistory(getApiKey().toString(),name,dateFrom,dateTo)
+    }
+
     fun saveCurrenciesNames(arrayNames: ArrayList<String>) {
-        //val n =dataShared.getCurrenciesNumber()
             dataShared.saveCurrenciesNames(arrayNames)
     }
 

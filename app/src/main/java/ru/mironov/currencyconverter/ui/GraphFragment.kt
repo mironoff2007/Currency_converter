@@ -1,7 +1,5 @@
 package ru.mironov.currencyconverter.ui
 
-
-
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -36,7 +34,6 @@ import ru.mironov.currencyconverter.ui.spinner.CustomAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class GraphFragment : Fragment() {
 
     companion object {
@@ -44,7 +41,6 @@ class GraphFragment : Fragment() {
         private const val PATTERN_DATE_FORMAT = "yyyy-MM-dd"
         private const val MIN_API_DATE = "1999-1-1"
     }
-
 
     private lateinit var viewModel: ViewModelGraphFragment
 
@@ -98,7 +94,12 @@ class GraphFragment : Fragment() {
                 i: Int,
                 l: Long
             ) {
-
+                viewModel.getCurrencyHistory(
+                    viewModel.getCurrenciesNames()[i],
+                    "RUB",
+                    binding.dateFromButton.text.toString(),
+                    binding.dateToButton.text.toString()
+                )
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
