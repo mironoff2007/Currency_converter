@@ -37,7 +37,7 @@ import java.util.*
 class GraphFragment : Fragment() {
 
     companion object {
-        private const val CUSTOM_DATE_FORMAT = "dd-MM-yyyy"
+        private const val UI_DATE_FORMAT = "dd-MM-yyyy"
         private const val PATTERN_DATE_FORMAT = "yyyy-MM-dd"
         private const val MIN_API_DATE = "1999-1-1"
     }
@@ -97,8 +97,8 @@ class GraphFragment : Fragment() {
                 viewModel.getCurrencyHistory(
                     viewModel.getCurrenciesNames()[i],
                     "RUB",
-                    binding.dateFromButton.text.toString(),
-                    binding.dateToButton.text.toString()
+                    makeRequestDateString(binding.dateFromButton.text.toString()),
+                    makeRequestDateString(binding.dateToButton.text.toString())
                 )
             }
 
@@ -117,13 +117,13 @@ class GraphFragment : Fragment() {
         val style: Int = AlertDialog.THEME_HOLO_LIGHT
 
         //Set to date
-        binding.dateToButton.text = makeDateString(day, month + 1, year)
+        binding.dateToButton.text = makeUiDateString(day, month + 1, year)
 
         dateSetListenerTo =
             OnDateSetListener { datePicker, year, month, day ->
                 var month = month
                 month += 1
-                val date: String = makeDateString(day, month, year)
+                val date: String = makeUiDateString(day, month, year)
                 binding.dateToButton.text = date
                 datePickerDialogFrom?.datePicker?.maxDate = getDate(day - 1, month, year).time
             }
@@ -137,12 +137,12 @@ class GraphFragment : Fragment() {
             OnDateSetListener { datePicker, year, month, day ->
                 var month = month
                 month += 1
-                val date: String = makeDateString(day, month, year)
+                val date: String = makeUiDateString(day, month, year)
                 binding.dateFromButton.text = date
                 datePickerDialogTo?.datePicker?.minDate = getDate(day + 1, month, year).time
             }
 
-        binding.dateFromButton.text = makeDateString(day, month, year)
+        binding.dateFromButton.text = makeUiDateString(day, month, year)
 
         datePickerDialogFrom =
             DatePickerDialog(requireContext(), style, dateSetListenerFrom, year, month - 1, day)
@@ -153,9 +153,15 @@ class GraphFragment : Fragment() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun makeDateString(day: Int, month: Int, year: Int): String {
+    private fun makeUiDateString(day: Int, month: Int, year: Int): String {
         val date = SimpleDateFormat(PATTERN_DATE_FORMAT).parse("$year-$month-$day")
-        return SimpleDateFormat(CUSTOM_DATE_FORMAT).format(date)
+        return SimpleDateFormat(UI_DATE_FORMAT).format(date)
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun makeRequestDateString(date:String): String {
+        val date = SimpleDateFormat(UI_DATE_FORMAT).parse(date)
+        return SimpleDateFormat(PATTERN_DATE_FORMAT).format(date)
     }
 
     private fun getDate(day: Int, month: Int, year: Int): Date {

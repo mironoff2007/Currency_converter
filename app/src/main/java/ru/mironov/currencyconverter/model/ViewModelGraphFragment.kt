@@ -1,6 +1,7 @@
 package ru.mironov.currencyconverter.model
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.mironov.currencyconverter.repository.Repository
@@ -30,10 +31,15 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
         return repository.getCurrenciesNames()
     }
 
-    fun getCurrencyHistory(nameBaseCurrency: String,nameConvCur: String, dateFrom: String, dateTo: String) {
+    fun getCurrencyHistory(
+        nameBaseCurrency: String,
+        nameConvCur: String,
+        dateFrom: String,
+        dateTo: String
+    ) {
         mutableStatus.postValue(Status.LOADING)
-        repository.getHistoryFromNetwork(nameBaseCurrency, dateFrom, dateTo)
-            ?.enqueue(object : Callback<JsonHistory?> {
+        repository.getHistoryFromNetwork(nameBaseCurrency, dateFrom, dateTo)!!
+            .enqueue(object : Callback<JsonHistory?> {
                 override fun onResponse(
                     call: Call<JsonHistory?>,
                     response: Response<JsonHistory?>

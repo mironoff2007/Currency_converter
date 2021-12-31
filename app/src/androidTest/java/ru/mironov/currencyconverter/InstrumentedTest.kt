@@ -14,6 +14,7 @@ import javax.inject.Inject
 import org.junit.Before
 import ru.mironov.currencyconverter.di.DaggerTestAppComponent
 import ru.mironov.currencyconverter.di.TestAppComponent
+import ru.mironov.currencyconverter.model.ViewModelGraphFragment
 import ru.mironov.currencyconverter.retrofit.JsonHistory
 
 @RunWith(AndroidJUnit4::class)
@@ -35,6 +36,9 @@ class InstrumentedTest {
 
     @Inject
     lateinit var retrofit: CurrencyApi
+
+    @Inject
+    lateinit var viwModel: ViewModelGraphFragment
 
     @Test
     fun encryptedSharedPreferencesTest() {
