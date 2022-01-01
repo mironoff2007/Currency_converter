@@ -70,6 +70,9 @@ class GraphFragment : Fragment() {
     private var currencyFrom: String = ""
     private var currencyTo: String = ""
 
+    private var spinnerFromAdapter:CustomAdapter?=null
+    private var spinnerToAdapter:CustomAdapter?=null
+
     private lateinit var currenciesNames: ArrayList<String>
 
     private lateinit var chart: LineChart
@@ -104,10 +107,10 @@ class GraphFragment : Fragment() {
 
         currenciesNames = viewModel.getCurrenciesNames()
 
-        val curFromAdapter =
+        spinnerFromAdapter =
             CustomAdapter(requireContext(), currenciesNames)
         //Spinner From
-        binding.spinnerFrom.adapter = curFromAdapter
+        binding.spinnerFrom.adapter = spinnerFromAdapter
         binding.spinnerFrom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 adapterView: AdapterView<*>?,
@@ -124,10 +127,10 @@ class GraphFragment : Fragment() {
             }
         }
 
-        val curToAdapter =
+        spinnerToAdapter =
             CustomAdapter(requireContext(), currenciesNames)
         //Spinner To
-        binding.spinnerTo.adapter = curToAdapter
+        binding.spinnerTo.adapter = spinnerToAdapter
         binding.spinnerTo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 adapterView: AdapterView<*>?,
@@ -468,7 +471,7 @@ class GraphFragment : Fragment() {
         datePickerDialogFrom = null
         dateSetListenerTo = null
         dateSetListenerFrom = null
-        binding.spinnerFrom.adapter=null
-        binding.spinnerTo.adapter=null
+        spinnerToAdapter=null
+        spinnerFromAdapter=null
     }
 }
