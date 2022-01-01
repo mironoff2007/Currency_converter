@@ -362,10 +362,13 @@ class GraphFragment : Fragment() {
                 chart.axisLeft.axisMinimum = (minValue / scaleAxisLimits).toFloat()
 
                 val set1: LineDataSet
+                val label="${resources.getString(R.string.from)} $currencyFrom ${resources.getString(R.string.to)} $currencyTo"
                 if (chart.data != null &&
                     chart.data.dataSetCount > 0
                 ) {
+
                     set1 = chart.data.getDataSetByIndex(0) as LineDataSet
+                    set1.label =label
                     chart.invalidate()
                     set1.values = values
                     set1.notifyDataSetChanged()
@@ -374,7 +377,7 @@ class GraphFragment : Fragment() {
 
                 } else {
                     // create a dataset and give it a type
-                    set1 = LineDataSet(values, "$currencyFrom to $currencyTo")
+                    set1 = LineDataSet(values,  label)
                     set1.setDrawIcons(false)
 
                     // draw dashed line
