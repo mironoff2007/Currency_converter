@@ -2,9 +2,14 @@ package ru.mironov.currencyconverter.ui.mpchart
 
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class DateXAxisValueFormatter : IndexAxisValueFormatter() {
+
+    companion object {
+        private const val GRAPH_DATE_FORMAT = "dd.MM.yy"
+    }
 
     override fun getFormattedValue(value: Float): String? {
 
@@ -15,7 +20,7 @@ class DateXAxisValueFormatter : IndexAxisValueFormatter() {
         // Show time in local version
         val timeMilliseconds = Date(emissionsMilliSince1970Time)
         val dateTimeFormat: DateFormat =
-            DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+            SimpleDateFormat(GRAPH_DATE_FORMAT)
         return dateTimeFormat.format(timeMilliseconds)
     }
 }

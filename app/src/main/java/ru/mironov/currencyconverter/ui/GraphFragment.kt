@@ -274,6 +274,8 @@ class GraphFragment : Fragment() {
 
         // vertical grid lines
         xAxis.enableGridDashedLine(10f, 10f, 0f)
+        xAxis.granularity=1f
+        xAxis.labelCount=4
 
 
         // Formatter to adjust epoch time to readable date
