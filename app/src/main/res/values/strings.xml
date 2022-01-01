@@ -6,4 +6,6 @@
     <string name="error">ошибка</string>
     <string name="from_cache">из кэша</string>
     <string name="eur">EUR</string>
+    <string name="from">из</string>
+    <string name="to">в</string>
 </resources>

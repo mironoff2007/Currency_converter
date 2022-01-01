@@ -1,5 +1,5 @@
 
-package ru.mironov.currencyconverter.ui;
+package ru.mironov.currencyconverter.ui.mpchart;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

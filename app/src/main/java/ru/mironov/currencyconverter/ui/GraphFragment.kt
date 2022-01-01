@@ -35,6 +35,8 @@ import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
 import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.model.ViewModelGraphFragment
+import ru.mironov.currencyconverter.ui.mpchart.DateXAxisValueFormatter
+import ru.mironov.currencyconverter.ui.mpchart.MyMarkerView
 import ru.mironov.currencyconverter.ui.spinner.CustomAdapter
 import java.text.SimpleDateFormat
 import java.util.*
@@ -47,7 +49,9 @@ class GraphFragment : Fragment() {
         private const val PATTERN_DATE_FORMAT = "yyyy-MM-dd"
         private const val MIN_API_DATE = "1999-1-1"
         private const val DAY_MILLIS = 86400000
+        private const val scaleAxisLimits=1.1f
     }
+
 
     private lateinit var viewModel: ViewModelGraphFragment
 
@@ -61,12 +65,12 @@ class GraphFragment : Fragment() {
     private var dateSetListenerTo: OnDateSetListener? = null
     private var dateSetListenerFrom: OnDateSetListener? = null
 
-    private var dateFromString:String=""
-    private var dateToString:String=""
-    private var currencyFrom:String=""
-    private var currencyTo:String=""
+    private var dateFromString: String = ""
+    private var dateToString: String = ""
+    private var currencyFrom: String = ""
+    private var currencyTo: String = ""
 
-    private lateinit var currenciesNames:ArrayList<String>
+    private lateinit var currenciesNames: ArrayList<String>
 
     private lateinit var chart: LineChart
 
@@ -79,7 +83,7 @@ class GraphFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentGraphBinding.inflate(inflater, container, false)
 
@@ -98,7 +102,7 @@ class GraphFragment : Fragment() {
 
     private fun initSpinners() {
 
-        currenciesNames=viewModel.getCurrenciesNames()
+        currenciesNames = viewModel.getCurrenciesNames()
 
         val curFromAdapter =
             CustomAdapter(requireContext(), currenciesNames)
@@ -111,7 +115,7 @@ class GraphFragment : Fragment() {
                 i: Int,
                 l: Long
             ) {
-                currencyFrom=currenciesNames[i]
+                currencyFrom = currenciesNames[i]
                 updateGraph()
             }
 
@@ -131,7 +135,7 @@ class GraphFragment : Fragment() {
                 i: Int,
                 l: Long
             ) {
-                currencyTo=currenciesNames[i]
+                currencyTo = currenciesNames[i]
                 updateGraph()
             }
 
@@ -142,13 +146,14 @@ class GraphFragment : Fragment() {
     }
 
     private fun updateGraph() {
-        if(currencyFrom!=currencyTo&&currencyFrom!=""&&currencyTo!=""){
-        viewModel.getCurrencyHistory(
-            currencyFrom,
-            currencyTo,
-            dateFromString,
-            dateToString
-        )}
+        if (currencyFrom != currencyTo && currencyFrom != "" && currencyTo != "") {
+            viewModel.getCurrencyHistory(
+                currencyFrom,
+                currencyTo,
+                dateFromString,
+                dateToString
+            )
+        }
     }
 
     private fun initDatePickers() {
@@ -159,25 +164,7 @@ class GraphFragment : Fragment() {
         val day: Int = cal.get(Calendar.DAY_OF_MONTH)
         val style: Int = AlertDialog.THEME_HOLO_LIGHT
 
-        //Set to date
-        binding.dateToButton.text = makeUiDateString(day, month + 1, year)
-        dateToString = makeRequestDateString(binding.dateToButton.text.toString())
-
-        dateSetListenerTo =
-            OnDateSetListener { datePicker, year, month, day ->
-                var month = month
-                month += 1
-                val date: String = makeUiDateString(day, month, year)
-                binding.dateToButton.text = date
-                datePickerDialogFrom?.datePicker?.maxDate = getDate(day - 1, month, year).time
-                dateToString=makeRequestDateString(binding.dateToButton.text.toString())
-                updateGraph()
-            }
-        datePickerDialogTo =
-            DatePickerDialog(requireContext(), style, dateSetListenerTo, year, month, day)
-        datePickerDialogTo?.datePicker?.maxDate = System.currentTimeMillis()
-
-        //Set from date
+        //Set "From" date listener
         dateSetListenerFrom =
             OnDateSetListener { datePicker, year, month, day ->
                 var month = month
@@ -185,19 +172,46 @@ class GraphFragment : Fragment() {
                 val date: String = makeUiDateString(day, month, year)
                 binding.dateFromButton.text = date
                 datePickerDialogTo?.datePicker?.minDate = getDate(day + 1, month, year).time
-                dateFromString=makeRequestDateString(date)
+                dateFromString = makeRequestDateString(date)
                 updateGraph()
             }
 
-        //Set initial From date
-        binding.dateFromButton.text = makeUiDateString(day, month, year - 1)
-        dateFromString = makeRequestDateString("$day-$month-"+(year-1))
 
+        //Set "To" date listener
+
+
+        dateSetListenerTo =
+            OnDateSetListener { datePicker, year, month, day ->
+                var month = month
+                month += 1
+                val date: String = makeUiDateString(day, month, year)
+                binding.dateToButton.text = date
+
+                datePickerDialogFrom?.datePicker?.maxDate = getDate(day - 1, month, year).time
+                dateToString = makeRequestDateString(binding.dateToButton.text.toString())
+                updateGraph()
+            }
+
+
+        //Set initial "From" date
+        binding.dateFromButton.text = makeUiDateString(day, month, year - 1)
+        dateFromString = makeRequestDateString("$day-$month-" + (year - 1))
+
+        //Limit "From" date
         datePickerDialogFrom =
             DatePickerDialog(requireContext(), style, dateSetListenerFrom, year, month, day)
         datePickerDialogFrom?.datePicker?.minDate =
             SimpleDateFormat(PATTERN_DATE_FORMAT).parse(MIN_API_DATE).time
         datePickerDialogFrom?.datePicker?.maxDate = System.currentTimeMillis().minus(DAY_MILLIS)
+
+        //Set current date
+        binding.dateToButton.text = makeUiDateString(day, month + 1, year)
+        dateToString = makeRequestDateString(binding.dateToButton.text.toString())
+
+        //Limit "To" date
+        datePickerDialogTo =
+            DatePickerDialog(requireContext(), style, dateSetListenerTo, year, month, day)
+        datePickerDialogTo?.datePicker?.maxDate = System.currentTimeMillis()
 
     }
 
@@ -218,14 +232,9 @@ class GraphFragment : Fragment() {
     }
 
     //MPChart
-    fun setupChart() {
-        /* getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-             WindowManager.LayoutParams.FLAG_FULLSCREEN);
-         setContentView(R.layout.activity_linechart);
-         */
+    private fun setupChart() {
         // // Chart Style // //
         chart = binding.chart1
-
 
         // background color
         chart.setBackgroundColor(Color.WHITE);
@@ -241,14 +250,17 @@ class GraphFragment : Fragment() {
         chart.setDrawGridBackground(false);
 
         // create marker to display box when values are selected
-        val mv = MyMarkerView(requireContext(), R.layout.custom_marker_view);
+        val mv = MyMarkerView(
+            requireContext(),
+            R.layout.custom_marker_view
+        );
 
         // Set the marker to the chart
-        mv.setChartView(chart);
-        chart.setMarker(mv);
+        mv.chartView = chart;
+        chart.marker = mv;
 
         // enable scaling and dragging
-        chart.setDragEnabled(true);
+        chart.isDragEnabled = true;
         chart.setScaleEnabled(true);
         // chart.setScaleXEnabled(true);
         // chart.setScaleYEnabled(true);
@@ -264,6 +276,9 @@ class GraphFragment : Fragment() {
         xAxis.enableGridDashedLine(10f, 10f, 0f)
 
 
+        // Formatter to adjust epoch time to readable date
+        chart.xAxis.valueFormatter = DateXAxisValueFormatter()
+
         // // Y-Axis Style // //
         var yAxis: YAxis = chart.axisLeft
 
@@ -278,8 +293,8 @@ class GraphFragment : Fragment() {
 
 
         // // Create Limit Lines // //
-        val tfRegular = Typeface.createFromAsset(requireContext().assets, "OpenSans-Regular.ttf");
-        val tfLight = Typeface.createFromAsset(requireContext().assets, "OpenSans-Light.ttf");
+        val tfRegular = Typeface.createFromAsset(requireContext().assets, "OpenSans-Regular.ttf")
+        val tfLight = Typeface.createFromAsset(requireContext().assets, "OpenSans-Light.ttf")
 
         val llXAxis = LimitLine(9f, "Index 10")
         llXAxis.lineWidth = 4f
@@ -311,13 +326,13 @@ class GraphFragment : Fragment() {
         //xAxis.addLimitLine(llXAxis);
 
         // draw points over time
-        chart.animateX(1500);
+        chart.animateX(1500)
 
         // get the legend (only possible after setting data)
-        val l: Legend = chart.legend;
+        val l: Legend = chart.legend
 
         // draw legend entries as lines
-        l.form = Legend.LegendForm.LINE;
+        l.form = Legend.LegendForm.LINE
     }
 
     private fun setData() {
@@ -328,18 +343,23 @@ class GraphFragment : Fragment() {
             var i = 0f
 
             var maxValue = 0f
+            var minValue = viewModel.arrayHistory[0].rate
             viewModel.arrayHistory.forEach() { it ->
                 if (it.rate > maxValue) {
                     maxValue = it.rate.toFloat()
                 }
-                values.add(Entry(i, it.rate.toFloat()))
+                if (it.rate < minValue) {
+                    minValue = it.rate
+                }
+                values.add(Entry(it.date.time.toFloat(), it.rate.toFloat()))
                 i++
             }
 
             //Update UI
             viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Main) {
 
-                chart.axisLeft.axisMaximum = maxValue * 1.1f
+                chart.axisLeft.axisMaximum = maxValue * scaleAxisLimits
+                chart.axisLeft.axisMinimum = (minValue / scaleAxisLimits).toFloat()
 
                 val set1: LineDataSet
                 if (chart.data != null &&
@@ -354,7 +374,7 @@ class GraphFragment : Fragment() {
 
                 } else {
                     // create a dataset and give it a type
-                    set1 = LineDataSet(values, " to ")
+                    set1 = LineDataSet(values, "$currencyFrom to $currencyTo")
                     set1.setDrawIcons(false)
 
                     // draw dashed line
@@ -443,5 +463,7 @@ class GraphFragment : Fragment() {
         datePickerDialogFrom = null
         dateSetListenerTo = null
         dateSetListenerFrom = null
+        binding.spinnerFrom.adapter=null
+        binding.spinnerTo.adapter=null
     }
 }
