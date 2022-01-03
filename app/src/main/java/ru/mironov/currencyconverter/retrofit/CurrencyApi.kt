@@ -10,6 +10,11 @@ interface CurrencyApi {
 
     @GET("latest")
     fun getRates(
+        @Query("apikey") apiKey: String
+    ): Call<JsonRates?>
+
+    @GET("latest")
+    fun getRatesBySpecific(
         @Query("apikey") apiKey: String,
         @Query("base_currency") baseCurrency: String,
     ): Call<JsonRates?>

@@ -1,8 +1,14 @@
 package ru.mironov.currencyconverter.model
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import ru.mironov.currencyconverter.repository.Repository
+import ru.mironov.currencyconverter.retrofit.ErrorBodyParser
+import ru.mironov.currencyconverter.retrofit.JsonRates
 import javax.inject.Inject
 
 class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewModel() {
@@ -10,13 +16,53 @@ class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewMo
     @Inject
     lateinit var repository:Repository
 
+    var mutableStatus = MutableLiveData<Status>()
 
-    fun isApiKeySaved():Boolean{
-        return repository.isApiKeySaved()
+    private var ratesObject: JsonRates? = null
+
+    fun saveNames(arrayNames: ArrayList<String>){
+        repository.saveCurrenciesNames(arrayNames)
     }
 
-    fun setApiKey(key:String){
-        repository.setApiKey(key)
-    }
+    fun getCurrencyRate(apiKey: String) {
+        mutableStatus.postValue(Status.LOADING())
+        repository.getRatesFromNetwork(apiKey)
+            ?.enqueue(object : Callback<JsonRates?> {
+                override fun onResponse(
+                    call: Call<JsonRates?>,
+                    response: Response<JsonRates?>
+                ) {
+                    if(response.body() != null){
 
+                        ratesObject = response.body()
+
+                        val currenciesNames = ArrayList<String>()
+
+                        ratesObject?.getBaseCurrency()?.let { currenciesNames.add(it) }
+
+                        ratesObject?.getRates()?.forEach(){
+                            currenciesNames.add(it.key)
+                        }
+                        saveNames(currenciesNames)
+
+                        mutableStatus.postValue(Status.DATA())
+
+                    } else {
+                        if (response.errorBody()!=null){
+                            mutableStatus.postValue(
+                                Status.ERROR(
+                                    ErrorBodyParser.getErrorString(
+                                        response.errorBody()!!
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<JsonRates?>, t: Throwable) {
+                    mutableStatus.postValue(Status.ERROR(t.message.toString()))
+                }
+            })
+    }
 }

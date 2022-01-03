@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.mironov.currencyconverter.retrofit.ErrorBodyParser
 import ru.mironov.currencyconverter.retrofit.JsonHistory
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -37,7 +38,7 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
         dateFrom: String,
         dateTo: String
     ) {
-        mutableStatus.postValue(Status.LOADING)
+        mutableStatus.postValue(Status.LOADING())
         repository.getHistoryFromNetwork(nameBaseCurrency, dateFrom, dateTo)!!
             .enqueue(object : Callback<JsonHistory?> {
                 override fun onResponse(
@@ -60,15 +61,23 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
                                         )
                                     )
                                 }
-                            mutableStatus.postValue(Status.DATA)
+                            mutableStatus.postValue(Status.DATA())
                         }
                     } else {
-                        mutableStatus.postValue(Status.ERROR)
+                        if (response.errorBody() != null) {
+                            mutableStatus.postValue(
+                                Status.ERROR(
+                                    ErrorBodyParser.getErrorString(
+                                        response.errorBody()!!
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<JsonHistory?>, t: Throwable) {
-                    mutableStatus.postValue(Status.ERROR)
+                    mutableStatus.postValue(Status.ERROR(t.message.toString()))
                 }
             })
     }

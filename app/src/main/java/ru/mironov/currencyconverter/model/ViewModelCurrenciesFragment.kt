@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.mironov.currencyconverter.retrofit.ErrorBodyParser
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -28,8 +29,8 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
     val arrayRates = ArrayList<CurrencyRate>()
 
     fun getCurrencyRate(name: String) {
-        mutableStatus.postValue(Status.LOADING)
-        repository.getRatesFromNetwork(name)
+        mutableStatus.postValue(Status.LOADING())
+        repository.getRatesBaseSpecificFromNetwork(name)
             ?.enqueue(object : Callback<JsonRates?> {
                 override fun onResponse(
                     call: Call<JsonRates?>,
@@ -40,11 +41,9 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                             ratesObject = response.body()
 
                             if (arrayRates.isEmpty()) {
-                                val arrayNames= ArrayList<String>()
 
                                 responseCurrency = ratesObject?.getBaseCurrency().toString()
 
-                                arrayNames.add(responseCurrency!!)
 
                                 //First currency to convert from
                                 arrayRates.add(
@@ -56,11 +55,10 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                                 //Set currencies to convert to
                                 ratesObject?.getRates()?.forEach { cur ->
                                     if(cur.key!=ratesObject?.getBaseCurrency().toString()){
-                                    arrayRates.add(CurrencyRate(cur.key, cur.value))
-                                    arrayNames.add(cur.key)}
+                                    arrayRates.add(CurrencyRate(cur.key, cur.value))}
                                 }
 
-                                repository.saveCurrenciesNames(arrayNames)
+
                             } else {
                                 synchronized(arrayRates) {
                                     arrayRates.forEach { it ->
@@ -73,15 +71,23 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                             }
 
 
-                            mutableStatus.postValue(Status.DATA)
+                            mutableStatus.postValue(Status.DATA())
                         }
                     } else {
-                        mutableStatus.postValue(Status.ERROR)
+                        if (response.errorBody() != null) {
+                            mutableStatus.postValue(
+                                Status.ERROR(
+                                    ErrorBodyParser.getErrorString(
+                                        response.errorBody()!!
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<JsonRates?>, t: Throwable) {
-                    mutableStatus.postValue(Status.ERROR)
+                    mutableStatus.postValue(Status.ERROR(t.message.toString()))
                 }
             })
     }

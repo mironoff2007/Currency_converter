@@ -207,12 +207,12 @@ class CurrenciesFragment : Fragment() {
     private fun setupObserver() {
         viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
             when (status) {
-                Status.DATA -> {
+                is Status.DATA -> {
                     populateRecycler(getDoubleFromText(binding.firstRow.currencyRate.text.toString()))
                     timerProgressBar?.cancel()
                     binding.progressBar.visibility = View.GONE
                 }
-                Status.LOADING -> {
+                is Status.LOADING -> {
                     //Show progress bar only for long response
                     timerProgressBar =
                         viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
@@ -222,7 +222,7 @@ class CurrenciesFragment : Fragment() {
                             }
                         }
                 }
-                Status.ERROR -> {
+                is Status.ERROR -> {
                     timerProgressBar?.cancel()
                     binding.progressBar.visibility = View.GONE
 
@@ -230,7 +230,7 @@ class CurrenciesFragment : Fragment() {
                     errorToast = if (viewModel.arrayRates.isEmpty()) {
                         Toast.makeText(
                             this.requireContext(),
-                            getString(R.string.error),
+                            getString(R.string.error)+"-"+status.message,
                             Toast.LENGTH_LONG
                         )
                     } else {

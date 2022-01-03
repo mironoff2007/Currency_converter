@@ -445,18 +445,18 @@ class GraphFragment : Fragment() {
     private fun setupObserver() {
         viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
             when (status) {
-                Status.DATA -> {
+                is Status.DATA -> {
                     setData()
                     binding.progressBar.visibility = View.GONE
                 }
-                Status.LOADING -> {
+                is Status.LOADING -> {
                     //Show progress bar only for long response
                     binding.progressBar.visibility = View.VISIBLE
                 }
-                Status.ERROR -> {
+                is Status.ERROR -> {
                     Toast.makeText(
                         this.requireContext(),
-                        getString(R.string.error),
+                        getString(R.string.error)+"-"+status.message,
                         Toast.LENGTH_LONG
                     ).show()
                 }

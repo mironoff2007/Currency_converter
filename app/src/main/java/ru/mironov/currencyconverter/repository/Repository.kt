@@ -25,8 +25,12 @@ class Repository @Inject constructor (var dataShared: DataShared,var encryptedDa
         return encryptedDataShared.getString(API_KEY)
     }
 
-    fun getRatesFromNetwork(name:String): Call<JsonRates?>? {
-       return  retrofit.getRates(getApiKey().toString(),name)
+    fun getRatesBaseSpecificFromNetwork(name:String): Call<JsonRates?>? {
+        return  retrofit.getRatesBySpecific(getApiKey().toString(),name)
+    }
+
+    fun getRatesFromNetwork(apiKey:String): Call<JsonRates?>? {
+        return  retrofit.getRates(apiKey)
     }
 
     fun getHistoryFromNetwork(name:String,dateFrom:String,dateTo:String): Call<JsonHistory?>? {
@@ -34,7 +38,7 @@ class Repository @Inject constructor (var dataShared: DataShared,var encryptedDa
     }
 
     fun saveCurrenciesNames(arrayNames: ArrayList<String>) {
-            dataShared.saveCurrenciesNames(arrayNames)
+        dataShared.saveCurrenciesNames(arrayNames)
     }
 
     fun getCurrenciesNames(): ArrayList<String> {
