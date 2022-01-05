@@ -7,7 +7,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.mironov.currencyconverter.repository.Repository
-import ru.mironov.currencyconverter.retrofit.ErrorBodyParser
+import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.retrofit.JsonRates
 import javax.inject.Inject
 
@@ -51,9 +51,8 @@ class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewMo
                         if (response.errorBody()!=null){
                             mutableStatus.postValue(
                                 Status.ERROR(
-                                    ErrorBodyParser.getErrorString(
-                                        response.errorBody()!!
-                                    )
+                                    ErrorUtil.parseError(response.errorBody()!!),
+                                    response.raw().code()
                                 )
                             )
                         }
@@ -61,7 +60,7 @@ class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewMo
                 }
 
                 override fun onFailure(call: Call<JsonRates?>, t: Throwable) {
-                    mutableStatus.postValue(Status.ERROR(t.message.toString()))
+                    mutableStatus.postValue(Status.ERROR(t.message.toString(),0))
                 }
             })
     }

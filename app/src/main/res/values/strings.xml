@@ -8,4 +8,8 @@
     <string name="eur">EUR</string>
     <string name="from">из</string>
     <string name="to">в</string>
+    <string name="without_api_key_description">
+        Допустимое количество запросов без ключа - 10 в час.
+        Чтобы получить ключ зарегистрируйтесь на https://freecurrencyapi.net/</string>
+    <string name="hit_rate_limit_error_message">Вы достигли предела количества запросов</string>
 </resources>

@@ -29,6 +29,7 @@ import ru.mironov.currencyconverter.model.CurrencyRate
 import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
 import ru.mironov.currencyconverter.repository.Repository
+import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesAdapter
 import ru.mironov.currencyconverter.ui.recyclerview.CurrencyViewHolder
 import ru.mironov.currencyconverter.util.CurrencyDiffUtilCallback
@@ -230,7 +231,10 @@ class CurrenciesFragment : Fragment() {
                     errorToast = if (viewModel.arrayRates.isEmpty()) {
                         Toast.makeText(
                             this.requireContext(),
-                            getString(R.string.error)+"-"+status.message,
+                            getString(R.string.error) + " - " + ErrorUtil.getErrorMessage(
+                                requireContext(),
+                                status.code
+                            ),
                             Toast.LENGTH_LONG
                         )
                     } else {

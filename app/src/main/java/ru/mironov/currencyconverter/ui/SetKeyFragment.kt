@@ -12,8 +12,9 @@ import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.model.Status
+import ru.mironov.currencyconverter.retrofit.ErrorUtil
 
-class SetKeyFragment:Fragment(R.layout.fragment_setkey) {
+class SetKeyFragment : Fragment(R.layout.fragment_setkey) {
 
     private lateinit var viewModel: ViewModelSetKeyFragment
 
@@ -49,8 +50,7 @@ class SetKeyFragment:Fragment(R.layout.fragment_setkey) {
 
         if (apiKey.isNullOrBlank()) {
             Toast.makeText(context, getString(R.string.api_key_is_empty), Toast.LENGTH_LONG).show()
-        }
-        else {
+        } else {
             viewModel.getCurrencyRate(apiKey.toString())
         }
     }
@@ -69,7 +69,14 @@ class SetKeyFragment:Fragment(R.layout.fragment_setkey) {
                 }
                 is Status.ERROR -> {
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(context, getString(R.string.error)+"-"+status.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        getString(R.string.error) + " - " + ErrorUtil.getErrorMessage(
+                            requireContext(),
+                            status.code
+                        ),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }

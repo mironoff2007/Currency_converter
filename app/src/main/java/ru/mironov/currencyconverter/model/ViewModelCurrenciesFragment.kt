@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.mironov.currencyconverter.retrofit.ErrorBodyParser
+import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -77,9 +77,8 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                         if (response.errorBody() != null) {
                             mutableStatus.postValue(
                                 Status.ERROR(
-                                    ErrorBodyParser.getErrorString(
-                                        response.errorBody()!!
-                                    )
+                                    ErrorUtil.parseError(response.errorBody()!!),
+                                        response.raw().code()
                                 )
                             )
                         }
@@ -87,7 +86,7 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                 }
 
                 override fun onFailure(call: Call<JsonRates?>, t: Throwable) {
-                    mutableStatus.postValue(Status.ERROR(t.message.toString()))
+                    mutableStatus.postValue(Status.ERROR(t.message.toString(),0))
                 }
             })
     }

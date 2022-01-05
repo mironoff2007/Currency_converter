@@ -35,6 +35,7 @@ import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
 import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.model.ViewModelGraphFragment
+import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.ui.mpchart.DateXAxisValueFormatter
 import ru.mironov.currencyconverter.ui.mpchart.MyMarkerView
 import ru.mironov.currencyconverter.ui.spinner.CustomAdapter
@@ -49,7 +50,7 @@ class GraphFragment : Fragment() {
         private const val PATTERN_DATE_FORMAT = "yyyy-MM-dd"
         private const val MIN_API_DATE = "1999-1-1"
         private const val DAY_MILLIS = 86400000
-        private const val scaleAxisLimits=1.1f
+        private const val scaleAxisLimits = 1.1f
     }
 
 
@@ -70,8 +71,8 @@ class GraphFragment : Fragment() {
     private var currencyFrom: String = ""
     private var currencyTo: String = ""
 
-    private var spinnerFromAdapter:CustomAdapter?=null
-    private var spinnerToAdapter:CustomAdapter?=null
+    private var spinnerFromAdapter: CustomAdapter? = null
+    private var spinnerToAdapter: CustomAdapter? = null
 
     private lateinit var currenciesNames: ArrayList<String>
 
@@ -181,8 +182,6 @@ class GraphFragment : Fragment() {
 
 
         //Set "To" date listener
-
-
         dateSetListenerTo =
             OnDateSetListener { datePicker, year, month, day ->
                 var month = month
@@ -277,8 +276,8 @@ class GraphFragment : Fragment() {
 
         // vertical grid lines
         xAxis.enableGridDashedLine(10f, 10f, 0f)
-        xAxis.granularity=1f
-        xAxis.labelCount=4
+        xAxis.granularity = 1f
+        xAxis.labelCount = 4
 
 
         // Formatter to adjust epoch time to readable date
@@ -295,40 +294,6 @@ class GraphFragment : Fragment() {
 
         // axis range
         yAxis.axisMinimum = 0f
-
-
-        // // Create Limit Lines // //
-        val tfRegular = Typeface.createFromAsset(requireContext().assets, "OpenSans-Regular.ttf")
-        val tfLight = Typeface.createFromAsset(requireContext().assets, "OpenSans-Light.ttf")
-
-        val llXAxis = LimitLine(9f, "Index 10")
-        llXAxis.lineWidth = 4f
-        llXAxis.enableDashedLine(10f, 10f, 0f)
-        llXAxis.labelPosition = LimitLabelPosition.RIGHT_BOTTOM
-        llXAxis.textSize = 10f
-        llXAxis.typeface = tfRegular
-
-        /*
-        val ll1 = LimitLine(150f, "Upper Limit")
-        ll1.lineWidth = 4f
-        ll1.enableDashedLine(10f, 10f, 0f)
-        ll1.labelPosition = LimitLabelPosition.RIGHT_TOP
-        ll1.textSize = 10f
-        ll1.typeface = tfRegular
-        */
-
-        // draw limit lines behind data instead of on top
-
-        // draw limit lines behind data instead of on top
-        //yAxis.setDrawLimitLinesBehindData(true)
-        //xAxis.setDrawLimitLinesBehindData(true)
-
-        // add limit lines
-
-        // add limit lines
-        //yAxis.addLimitLine(ll1)
-        //yAxis.addLimitLine(ll2)
-        //xAxis.addLimitLine(llXAxis);
 
         // draw points over time
         chart.animateX(1500)
@@ -367,13 +332,14 @@ class GraphFragment : Fragment() {
                 chart.axisLeft.axisMinimum = (minValue / scaleAxisLimits).toFloat()
 
                 val set1: LineDataSet
-                val label="${resources.getString(R.string.from)} $currencyFrom ${resources.getString(R.string.to)} $currencyTo"
+                val label =
+                    "${resources.getString(R.string.from)} $currencyFrom ${resources.getString(R.string.to)} $currencyTo"
                 if (chart.data != null &&
                     chart.data.dataSetCount > 0
                 ) {
 
                     set1 = chart.data.getDataSetByIndex(0) as LineDataSet
-                    set1.label =label
+                    set1.label = label
                     chart.invalidate()
                     set1.values = values
                     set1.notifyDataSetChanged()
@@ -382,7 +348,7 @@ class GraphFragment : Fragment() {
 
                 } else {
                     // create a dataset and give it a type
-                    set1 = LineDataSet(values,  label)
+                    set1 = LineDataSet(values, label)
                     set1.setDrawIcons(false)
 
                     // draw dashed line
@@ -455,10 +421,14 @@ class GraphFragment : Fragment() {
                 }
                 is Status.ERROR -> {
                     Toast.makeText(
-                        this.requireContext(),
-                        getString(R.string.error)+"-"+status.message,
+                        requireContext(),
+                        getString(R.string.error) + " - " + ErrorUtil.getErrorMessage(
+                            requireContext(),
+                            status.code
+                        ),
                         Toast.LENGTH_LONG
                     ).show()
+                    binding.progressBar.visibility = View.GONE
                 }
             }
         }
@@ -471,7 +441,7 @@ class GraphFragment : Fragment() {
         datePickerDialogFrom = null
         dateSetListenerTo = null
         dateSetListenerFrom = null
-        spinnerToAdapter=null
-        spinnerFromAdapter=null
+        spinnerToAdapter = null
+        spinnerFromAdapter = null
     }
 }

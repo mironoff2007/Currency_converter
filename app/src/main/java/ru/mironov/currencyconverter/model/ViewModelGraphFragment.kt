@@ -1,18 +1,16 @@
 package ru.mironov.currencyconverter.model
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.mironov.currencyconverter.repository.Repository
-import ru.mironov.currencyconverter.retrofit.JsonRates
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.mironov.currencyconverter.retrofit.ErrorBodyParser
+import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.retrofit.JsonHistory
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -49,27 +47,27 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
                         viewModelScope.launch(Dispatchers.Default) {
                             ratesObject = response.body()
 
-                                arrayHistory.clear()
+                            arrayHistory.clear()
 
-                                //Set currencies to convert to
-                                ratesObject?.getData()?.forEach { it ->
-                                    arrayHistory.add(
-                                        CurrencyHistory(
-                                            ratesObject?.getBaseCurrency().toString(),
-                                            it.key,
-                                            it.value[nameConvCur] ?: 0.0
-                                        )
+                            //Set currencies to convert to
+                            ratesObject?.getData()?.forEach { it ->
+                                arrayHistory.add(
+                                    CurrencyHistory(
+                                        ratesObject?.getBaseCurrency().toString(),
+                                        it.key,
+                                        it.value[nameConvCur] ?: 0.0
                                     )
-                                }
+                                )
+                            }
                             mutableStatus.postValue(Status.DATA())
                         }
                     } else {
                         if (response.errorBody() != null) {
                             mutableStatus.postValue(
                                 Status.ERROR(
-                                    ErrorBodyParser.getErrorString(
-                                        response.errorBody()!!
-                                    )
+                                    ErrorUtil.parseError(response.errorBody()!!),
+                                    response.raw().code()
+
                                 )
                             )
                         }
@@ -77,7 +75,7 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
                 }
 
                 override fun onFailure(call: Call<JsonHistory?>, t: Throwable) {
-                    mutableStatus.postValue(Status.ERROR(t.message.toString()))
+                    mutableStatus.postValue(Status.ERROR(t.message.toString(),0))
                 }
             })
     }
