@@ -12,13 +12,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : ViewModel() {
 
     @Inject
-    lateinit var repository:Repository
+    lateinit var repository: Repository
 
     var mutableStatus = MutableLiveData<Status>()
 
@@ -26,7 +27,11 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
 
     var responseCurrency: String? = null
 
-    val arrayRates = ArrayList<CurrencyRate>()
+    private val arrayRates = ArrayList<CurrencyRate>()
+
+    fun isRatesEmpty(): Boolean {
+        return arrayRates.isEmpty()
+    }
 
     fun getCurrencyRate(name: String) {
         mutableStatus.postValue(Status.LOADING())
@@ -41,9 +46,7 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                             ratesObject = response.body()
 
                             if (arrayRates.isEmpty()) {
-
                                 responseCurrency = ratesObject?.getBaseCurrency().toString()
-
 
                                 //First currency to convert from
                                 arrayRates.add(
@@ -54,11 +57,10 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                                 )
                                 //Set currencies to convert to
                                 ratesObject?.getRates()?.forEach { cur ->
-                                    if(cur.key!=ratesObject?.getBaseCurrency().toString()){
-                                    arrayRates.add(CurrencyRate(cur.key, cur.value))}
+                                    if (cur.key != ratesObject?.getBaseCurrency().toString()) {
+                                        arrayRates.add(CurrencyRate(cur.key, cur.value))
+                                    }
                                 }
-
-
                             } else {
                                 synchronized(arrayRates) {
                                     arrayRates.forEach { it ->
@@ -69,16 +71,20 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                                     }
                                 }
                             }
+                            val linkedArray = LinkedList<CurrencyRate>()
 
+                            arrayRates.forEach() {
+                                linkedArray.add(it.clone() as CurrencyRate)
+                            }
 
-                            mutableStatus.postValue(Status.DATA())
+                            mutableStatus.postValue(Status.DATA(linkedArray as LinkedList<Objects>))
                         }
                     } else {
                         if (response.errorBody() != null) {
                             mutableStatus.postValue(
                                 Status.ERROR(
                                     ErrorUtil.parseError(response.errorBody()!!),
-                                        response.raw().code()
+                                    response.raw().code()
                                 )
                             )
                         }
@@ -86,7 +92,7 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                 }
 
                 override fun onFailure(call: Call<JsonRates?>, t: Throwable) {
-                    mutableStatus.postValue(Status.ERROR(t.message.toString(),0))
+                    mutableStatus.postValue(Status.ERROR(t.message.toString(), 0))
                 }
             })
     }
@@ -106,6 +112,18 @@ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : Vi
                     it.rate = it.rate / convRate
                 }
             }
+        }
+    }
+
+    fun calculateCurrencies(value: Double) {
+        if (arrayRates.isNotEmpty()) {
+            val changedRates = LinkedList<CurrencyRate>()
+
+            arrayRates.forEach { it ->
+                changedRates.add(CurrencyRate(it.name, it.rate * value))
+            }
+            changedRates[0].rate = value
+            mutableStatus.postValue(Status.DATA(changedRates as LinkedList<Objects>))
         }
     }
 }

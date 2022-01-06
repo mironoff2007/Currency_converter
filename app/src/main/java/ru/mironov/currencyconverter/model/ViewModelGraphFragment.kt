@@ -12,6 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.retrofit.JsonHistory
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -20,7 +21,7 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
     @Inject
     lateinit var repository: Repository
 
-    val arrayHistory = ArrayList<CurrencyHistory>()
+    private val arrayHistory = ArrayList<CurrencyHistory>()
 
     var mutableStatus = MutableLiveData<Status>()
 
@@ -59,7 +60,7 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
                                     )
                                 )
                             }
-                            mutableStatus.postValue(Status.DATA())
+                            mutableStatus.postValue(Status.DATA(arrayHistory.clone() as ArrayList<Objects>))
                         }
                     } else {
                         if (response.errorBody() != null) {
@@ -79,5 +80,4 @@ class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewMod
                 }
             })
     }
-
 }

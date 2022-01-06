@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
+import ru.mironov.currencyconverter.model.CurrencyHistory
 import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.model.ViewModelGraphFragment
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
@@ -214,7 +215,6 @@ class GraphFragment : Fragment() {
         datePickerDialogTo =
             DatePickerDialog(requireContext(), style, dateSetListenerTo, year, month, day)
         datePickerDialogTo?.datePicker?.maxDate = System.currentTimeMillis()
-
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -305,7 +305,7 @@ class GraphFragment : Fragment() {
         l.form = Legend.LegendForm.LINE
     }
 
-    private fun setData() {
+    private fun setData(data:ArrayList<CurrencyHistory>) {
         //Prepare data for UI
         viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
             val values: ArrayList<Entry> = ArrayList()
@@ -313,8 +313,8 @@ class GraphFragment : Fragment() {
             var i = 0f
 
             var maxValue = 0f
-            var minValue = viewModel.arrayHistory[0].rate
-            viewModel.arrayHistory.forEach() { it ->
+            var minValue = data[0].rate
+            data.forEach() { it ->
                 if (it.rate > maxValue) {
                     maxValue = it.rate.toFloat()
                 }
@@ -412,7 +412,7 @@ class GraphFragment : Fragment() {
         viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
             when (status) {
                 is Status.DATA -> {
-                    setData()
+                    setData(status.someData as ArrayList<CurrencyHistory>)
                     binding.progressBar.visibility = View.GONE
                 }
                 is Status.LOADING -> {

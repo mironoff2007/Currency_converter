@@ -28,19 +28,14 @@ import ru.mironov.currencyconverter.databinding.FragmentCurrenciesBinding
 import ru.mironov.currencyconverter.model.CurrencyRate
 import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
-import ru.mironov.currencyconverter.repository.Repository
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesAdapter
 import ru.mironov.currencyconverter.ui.recyclerview.CurrencyViewHolder
 import ru.mironov.currencyconverter.util.CurrencyDiffUtilCallback
 import ru.mironov.currencyconverter.util.FlagSetter.setFlag
 import java.util.*
-import javax.inject.Inject
 
 class CurrenciesFragment : Fragment() {
-
-    @Inject
-    lateinit var repository: Repository
 
     private lateinit var viewModel: ViewModelCurrenciesFragment
 
@@ -64,7 +59,7 @@ class CurrenciesFragment : Fragment() {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            populateRecycler(getDoubleFromText(s.toString()))
+            viewModel.calculateCurrencies(getDoubleFromText(s.toString()))
         }
 
         override fun afterTextChanged(editable: Editable) {}
@@ -90,7 +85,6 @@ class CurrenciesFragment : Fragment() {
         adapterSetup()
         setupObserver()
         setupFirstRow(CurrencyRate(getString(R.string.eur), 1.0))
-
 
         viewModel.getCurrencyRate(
             binding.firstRow.currencyName.text.toString()
@@ -170,30 +164,19 @@ class CurrenciesFragment : Fragment() {
         (binding.recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
-    private fun populateRecycler(value: Double) {
+    private fun populateRecycler( data: LinkedList<CurrencyRate>) {
         //Calculate all currencies using input
         if (binding.firstRow.currencyName.text == viewModel.responseCurrency) {
             viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
-                synchronized(viewModel.arrayRates) {
 
-                    val changedRates = LinkedList<CurrencyRate>()
+                val currencyDiffUtilCallback =
+                    CurrencyDiffUtilCallback(adapter.rates, data)
+                val currencyDiffResult: DiffUtil.DiffResult =
+                    DiffUtil.calculateDiff(currencyDiffUtilCallback)
 
-                    viewModel.arrayRates.forEach { it ->
-                        changedRates.add(CurrencyRate(it.name, it.rate * value))
-                    }
-                    changedRates[0].rate = value
-
-                    val currencyDiffUtilCallback =
-                        CurrencyDiffUtilCallback(adapter.rates, changedRates)
-                    val currencyDiffResult: DiffUtil.DiffResult =
-                        DiffUtil.calculateDiff(currencyDiffUtilCallback)
-
-                    viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Main) {
-
-                        adapter.rates = changedRates
-                        currencyDiffResult.dispatchUpdatesTo(adapter)
-                        //adapter.notifyDataSetChanged()
-                    }
+                viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Main) {
+                    adapter.rates = data
+                    currencyDiffResult.dispatchUpdatesTo(adapter)
                 }
             }
         }
@@ -204,7 +187,7 @@ class CurrenciesFragment : Fragment() {
         viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
             when (status) {
                 is Status.DATA -> {
-                    populateRecycler(getDoubleFromText(binding.firstRow.currencyRate.text.toString()))
+                    populateRecycler(status.someData as LinkedList<CurrencyRate>)
                     timerProgressBar?.cancel()
                     binding.progressBar.visibility = View.GONE
                 }
@@ -223,7 +206,7 @@ class CurrenciesFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
 
                     errorToast?.cancel()
-                    errorToast = if (viewModel.arrayRates.isEmpty()) {
+                    errorToast = if (viewModel.isRatesEmpty()) {
                         Toast.makeText(
                             this.requireContext(),
                             getString(R.string.error) + " - " + ErrorUtil.getErrorMessage(

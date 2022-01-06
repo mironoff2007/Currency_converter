@@ -45,7 +45,7 @@ class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewMo
                         }
                         saveNames(currenciesNames)
 
-                        mutableStatus.postValue(Status.DATA())
+                        mutableStatus.postValue(Status.DATA(null))
 
                     } else {
                         if (response.errorBody()!=null){
