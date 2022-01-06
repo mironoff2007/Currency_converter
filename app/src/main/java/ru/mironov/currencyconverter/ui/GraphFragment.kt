@@ -47,13 +47,12 @@ import kotlin.collections.ArrayList
 class GraphFragment : Fragment() {
 
     companion object {
-        private const val UI_DATE_FORMAT = "dd-MM-yyyy"
+        private const val UI_DATE_FORMAT = "dd.MM.yyyy"
         private const val PATTERN_DATE_FORMAT = "yyyy-MM-dd"
         private const val MIN_API_DATE = "1999-1-1"
         private const val DAY_MILLIS = 86400000
-        private const val scaleAxisLimits = 1.1f
+        private const val scaleAxisLimits = 1.02f
     }
-
 
     private lateinit var viewModel: ViewModelGraphFragment
 
@@ -198,7 +197,7 @@ class GraphFragment : Fragment() {
 
         //Set initial "From" date
         binding.dateFromButton.text = makeUiDateString(day, month, year - 1)
-        dateFromString = makeRequestDateString("$day-$month-" + (year - 1))
+        dateFromString = makeRequestDateString(makeUiDateString(day,month,year))
 
         //Limit "From" date
         datePickerDialogFrom =
