@@ -36,7 +36,6 @@ import ru.mironov.currencyconverter.util.CurrencyDiffUtilCallback
 import ru.mironov.currencyconverter.util.FlagSetter.setFlag
 import java.util.*
 import javax.inject.Inject
-import kotlin.concurrent.fixedRateTimer
 
 class CurrenciesFragment : Fragment() {
 
@@ -51,7 +50,7 @@ class CurrenciesFragment : Fragment() {
 
     private val progressBarDelay: Long = 500
 
-    var errorToast: Toast? = null
+    private var errorToast: Toast? = null
 
     private lateinit var adapter: CurrenciesAdapter
 
@@ -62,17 +61,13 @@ class CurrenciesFragment : Fragment() {
     private val locale = Locale.US
 
     private val textChangeListener: TextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-        }
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             populateRecycler(getDoubleFromText(s.toString()))
         }
 
-        override fun afterTextChanged(editable: Editable) {
-
-        }
+        override fun afterTextChanged(editable: Editable) {}
     }
 
 
@@ -94,7 +89,7 @@ class CurrenciesFragment : Fragment() {
 
         adapterSetup()
         setupObserver()
-        setupFirstRaw(CurrencyRate(getString(R.string.eur), 1.0))
+        setupFirstRow(CurrencyRate(getString(R.string.eur), 1.0))
 
 
         viewModel.getCurrencyRate(
@@ -120,7 +115,7 @@ class CurrenciesFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupFirstRaw(currencyRate: CurrencyRate) {
+    private fun setupFirstRow(currencyRate: CurrencyRate) {
         binding.firstRow.currencyRate.textLocale = locale
         binding.firstRow.currencyRate.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
         binding.firstRow.currencyRate.addTextChangedListener(textChangeListener)
