@@ -59,14 +59,14 @@ class CurrenciesFavoriteFragment : Fragment() {
         viewModel =
             requireContext().appComponent.factory.create(ViewModelCurrenciesFragment::class.java)
 
+        adapterSetup()
+        setupObserver()
+
         val list=ArrayList<CurrencyFavorite>()
         viewModel.repository.getCurrenciesNames().forEach(){
             list.add(CurrencyFavorite(it,false))
         }
         populateRecycler(list)
-
-        adapterSetup()
-        setupObserver()
 
         return binding.root
     }
