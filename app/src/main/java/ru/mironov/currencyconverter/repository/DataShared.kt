@@ -35,6 +35,7 @@ class DataShared(context: Context, name: String) {
     fun saveCurrenciesNames(names: ArrayList<String>) {
         editor.putInt(NUMBER_OF_CURRENCIES, names.size).apply()
         var i = 0
+        names.sort()
         names.forEach() {
             editor.putString(CURRENCY_NAME_KEY + i, it).apply()
             i++
