@@ -17,10 +17,7 @@ import ru.mironov.currencyconverter.repository.DataShared
 import ru.mironov.currencyconverter.repository.EncryptedDataShared
 import ru.mironov.currencyconverter.repository.Repository
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
-import ru.mironov.currencyconverter.ui.CurrenciesFragment
-import ru.mironov.currencyconverter.ui.SetKeyFragment
-import ru.mironov.currencyconverter.ui.TabsFragment
-import ru.mironov.currencyconverter.ui.GraphFragment
+import ru.mironov.currencyconverter.ui.*
 import javax.inject.Singleton
 
 
@@ -32,6 +29,7 @@ interface AppComponent  {
     fun inject(fragment: SetKeyFragment)
     fun inject(fragment: CurrenciesFragment)
     fun inject(fragment: GraphFragment)
+    fun inject(fragment: CurrenciesFavoriteFragment)
 
 
 
