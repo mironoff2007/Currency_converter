@@ -7,5 +7,10 @@
         app:showAsAction="never"
         android:title="@string/set_api_key">
     </item>
+    <item
+        android:id="@+id/action_set_favorite"
+        app:showAsAction="never"
+        android:title="@string/set_favorite">
+    </item>
 
 </menu>

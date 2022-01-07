@@ -21,5 +21,16 @@
         <action
             android:id="@+id/action_tabsFragment_to_setKeyFragment"
             app:destination="@id/setKeyFragment" />
+        <action
+            android:id="@+id/action_tabsFragment_to_currenciesFavoriteFragment"
+            app:destination="@id/currenciesFavoriteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/currenciesFavoriteFragment"
+        android:name="ru.mironov.currencyconverter.ui.CurrenciesFavoriteFragment"
+        android:label="CurrenciesFavoriteFragment" >
+        <action
+            android:id="@+id/action_currenciesFavoriteFragment_to_tabsFragment"
+            app:destination="@id/tabsFragment" />
     </fragment>
 </navigation>
