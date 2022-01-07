@@ -6,16 +6,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.mironov.currencyconverter.model.CurrencyRate
 import ru.mironov.currencyconverter.databinding.ItemCurrencyFavoriteBinding
+import ru.mironov.currencyconverter.model.CurrencyFavorite
 import ru.mironov.currencyconverter.util.FlagSetter.setFlag
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CurrenciesFavoriteAdapter(
-    private val listener: ItemClickListener<CurrencyRate>,
-    private val locale: Locale
-) :
+    private val listener: ItemClickListener<CurrencyFavorite>,
+
+    ) :
+
     RecyclerView.Adapter<CurrencyFavoriteViewHolder>(), View.OnClickListener {
 
-    var rates: LinkedList<CurrencyRate> = LinkedList()
+    var favoriteCurrencies: ArrayList<CurrencyFavorite> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyFavoriteViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -27,7 +30,7 @@ class CurrenciesFavoriteAdapter(
 
     override fun onBindViewHolder(holder: CurrencyFavoriteViewHolder, position: Int) {
 
-        val currency = rates[position]
+        val currency = favoriteCurrencies[position]
         with(holder.binding) {
 
             currencyName.text = currency.name
@@ -38,7 +41,7 @@ class CurrenciesFavoriteAdapter(
         itemBinding.root.setOnClickListener { listener.onClickListener(holder) }
     }
 
-    override fun getItemCount(): Int = rates.size
+    override fun getItemCount(): Int = favoriteCurrencies.size
 
     interface ItemClickListener<I> {
         fun onClickListener(item: CurrencyFavoriteViewHolder) {
@@ -46,4 +49,8 @@ class CurrenciesFavoriteAdapter(
     }
 
     override fun onClick(v: View?) {}
+
+    fun notifyChanges(){
+        this.notifyDataSetChanged()
+    }
 }

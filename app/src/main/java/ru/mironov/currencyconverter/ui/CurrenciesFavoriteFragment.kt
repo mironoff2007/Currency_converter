@@ -2,39 +2,30 @@ package ru.mironov.currencyconverter.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.coroutineScope
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import kotlinx.android.synthetic.main.fragment_currencies.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.mironov.currency_converter.util.FormatNumbers.formatDoubleToString
-import ru.mironov.currency_converter.util.FormatNumbers.getDoubleFromText
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
-import ru.mironov.currencyconverter.databinding.FragmentCurrenciesBinding
 import ru.mironov.currencyconverter.databinding.FragmentCurrenciesFavoriteBinding
-import ru.mironov.currencyconverter.model.CurrencyRate
+import ru.mironov.currencyconverter.model.CurrencyFavorite
 import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
-import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesAdapter
-import ru.mironov.currencyconverter.ui.recyclerview.CurrencyViewHolder
-import ru.mironov.currencyconverter.util.CurrencyDiffUtilCallback
-import ru.mironov.currencyconverter.util.FlagSetter.setFlag
+import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesFavoriteAdapter
+import ru.mironov.currencyconverter.ui.recyclerview.CurrencyFavoriteViewHolder
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CurrenciesFavoriteFragment : Fragment() {
 
@@ -48,27 +39,12 @@ class CurrenciesFavoriteFragment : Fragment() {
 
     private var errorToast: Toast? = null
 
-    private lateinit var adapter: CurrenciesAdapter
+    private lateinit var adapter: CurrenciesFavoriteAdapter
 
     private var timerProgressBar: Job? = null
 
     private val locale = Locale.US
 
-    private val textChangeListener: TextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            viewModel.calculateCurrencies(getDoubleFromText(s.toString()))
-        }
-
-        override fun afterTextChanged(editable: Editable) {}
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requireContext().appComponent.inject(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,6 +56,12 @@ class CurrenciesFavoriteFragment : Fragment() {
 
         viewModel =
             requireContext().appComponent.factory.create(ViewModelCurrenciesFragment::class.java)
+
+        val list=ArrayList<CurrencyFavorite>()
+        viewModel.repository.getCurrenciesNames().forEach(){
+            list.add(CurrencyFavorite(it,false))
+        }
+        populateRecycler(list)
 
         adapterSetup()
         setupObserver()
@@ -93,26 +75,14 @@ class CurrenciesFavoriteFragment : Fragment() {
     }
 
     private fun adapterSetup() {
-        adapter = CurrenciesAdapter(object : CurrenciesAdapter.ItemClickListener<CurrencyRate> {
-            override fun onClickListener(clickedItem: CurrencyViewHolder) {
+        adapter = CurrenciesFavoriteAdapter(object :
+            CurrenciesFavoriteAdapter.ItemClickListener<CurrencyFavorite> {
+            override fun onClickListener(clickedItem: CurrencyFavoriteViewHolder) {
                 //On Recycler Item Clicked
-
-                //Lock to edit
-                if (recyclerView.findViewHolderForAdapterPosition(0) != null) {
-                    val firstItem =
-                        recyclerView.findViewHolderForAdapterPosition(0) as CurrencyViewHolder
-                    firstItem.binding.currencyRate.inputType = InputType.TYPE_NULL
-                    firstItem.binding.currencyRate.removeTextChangedListener(textChangeListener)
-                }
-
-                //Unlock to edit clicked
-                //clickedItem.binding.currencyRate.addTextChangedListener(textChangeListener)
-                clickedItem.binding.currencyRate.inputType = InputType.TYPE_CLASS_NUMBER
-                clickedItem.binding.currencyRate.requestFocus()
 
 
             }
-        }, locale)
+        })
 
         val layoutManager = LinearLayoutManager(this.requireContext())
         binding.recyclerView.layoutManager = layoutManager
@@ -127,22 +97,9 @@ class CurrenciesFavoriteFragment : Fragment() {
         (binding.recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
-    private fun populateRecycler( data: LinkedList<CurrencyRate>) {
-        //Calculate all currencies using input
-        if (binding.firstRow.currencyName.text == viewModel.responseCurrency) {
-            viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
-
-                val currencyDiffUtilCallback =
-                    CurrencyDiffUtilCallback(adapter.rates, data)
-                val currencyDiffResult: DiffUtil.DiffResult =
-                    DiffUtil.calculateDiff(currencyDiffUtilCallback)
-
-                viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Main) {
-                    adapter.rates = data
-                    currencyDiffResult.dispatchUpdatesTo(adapter)
-                }
-            }
-        }
+    private fun populateRecycler(data: ArrayList<CurrencyFavorite>) {
+        adapter.favoriteCurrencies = data
+        adapter.notifyChanges()
     }
 
     @SuppressLint("ShowToast")
@@ -150,7 +107,6 @@ class CurrenciesFavoriteFragment : Fragment() {
         viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
             when (status) {
                 is Status.DATA -> {
-                    populateRecycler(status.someData as LinkedList<CurrencyRate>)
                     timerProgressBar?.cancel()
                     binding.progressBar.visibility = View.GONE
                 }
