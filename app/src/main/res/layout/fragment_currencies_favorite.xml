@@ -27,9 +27,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <include
-                android:id="@+id/firstRow"
-                layout="@layout/item_currency_favorite" />
+
         </FrameLayout>
 
 

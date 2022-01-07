@@ -43,8 +43,10 @@ class CurrenciesFavoriteFragment : Fragment() {
 
     private var timerProgressBar: Job? = null
 
-    private val locale = Locale.US
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireContext().appComponent.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

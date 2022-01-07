@@ -49,7 +49,7 @@ class TabsFragment:Fragment(R.layout.fragment_tabs) {
                 findTopNavController().navigate(R.id.setKeyFragment)
                 true
             }
-            R.id.action_set_apikey-> {
+            R.id.action_set_favorite-> {
                 findTopNavController().navigate(R.id.currenciesFavoriteFragment)
                 true
             }
