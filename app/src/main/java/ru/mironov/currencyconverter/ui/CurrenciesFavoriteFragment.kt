@@ -67,7 +67,7 @@ class CurrenciesFavoriteFragment : Fragment() {
         adapterSetup()
         setupObserver()
 
-        val list = viewModel.repository.dataShared.getFavoriteCurrencies()
+        val list = viewModel.getFavoriteCurrencies()
 
         if (list != null) {
             populateRecycler(list)
@@ -83,7 +83,7 @@ class CurrenciesFavoriteFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.repository.dataShared.saveFavoriteCurrencies(adapter.favoriteCurrencies)
+        viewModel.saveFavoriteCurrencies(adapter.favoriteCurrencies)
     }
 
     private fun adapterSetup() {

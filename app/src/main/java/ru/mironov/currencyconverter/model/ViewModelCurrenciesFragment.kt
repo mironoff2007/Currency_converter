@@ -16,10 +16,10 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
- class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : ViewModel() {
+ open class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : ViewModel() {
 
     @Inject
-    lateinit var repository: Repository
+     protected lateinit var repository: Repository
 
     var mutableStatus = MutableLiveData<Status>()
 
@@ -126,4 +126,12 @@ import kotlin.collections.ArrayList
             mutableStatus.postValue(Status.DATA(changedRates as LinkedList<Objects>))
         }
     }
-}
+
+     fun getFavoriteCurrencies(): ArrayList<CurrencyFavorite>? {
+        return repository.getFavoriteCurrencies()
+     }
+
+     fun saveFavoriteCurrencies(favoriteCurrencies: ArrayList<CurrencyFavorite>) {
+        repository.saveFavoriteCurrencies(favoriteCurrencies)
+     }
+ }

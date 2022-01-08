@@ -61,7 +61,7 @@ class SetKeyFragment : Fragment(R.layout.fragment_setkey) {
                 is Status.DATA -> {
                     binding.progressBar.visibility = View.GONE
                     val apiKey = binding.editText.text.toString()
-                    viewModel.repository.setApiKey(apiKey)
+                    viewModel.setApiKey(apiKey)
                     navigateToTabs()
                 }
                 is Status.LOADING -> {

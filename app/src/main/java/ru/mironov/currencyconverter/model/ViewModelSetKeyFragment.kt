@@ -11,10 +11,10 @@ import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.retrofit.JsonRates
 import javax.inject.Inject
 
-class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewModel() {
+open class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewModel() {
 
     @Inject
-    lateinit var repository:Repository
+    protected lateinit var repository:Repository
 
     var mutableStatus = MutableLiveData<Status>()
 
@@ -63,5 +63,9 @@ class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewMo
                     mutableStatus.postValue(Status.ERROR(t.message.toString(),0))
                 }
             })
+    }
+
+    fun setApiKey(apiKey: String) {
+        repository.setApiKey(apiKey)
     }
 }

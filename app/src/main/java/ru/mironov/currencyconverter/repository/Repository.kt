@@ -2,12 +2,13 @@ package ru.mironov.currencyconverter.repository
 
 
 import retrofit2.Call
+import ru.mironov.currencyconverter.model.CurrencyFavorite
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
 import ru.mironov.currencyconverter.retrofit.JsonHistory
 import ru.mironov.currencyconverter.retrofit.JsonRates
 import javax.inject.Inject
 
-class Repository @Inject constructor (var dataShared: DataShared,var encryptedDataShared: EncryptedDataShared, var retrofit: CurrencyApi) {
+open class Repository @Inject constructor (protected var dataShared: DataShared, protected var encryptedDataShared: EncryptedDataShared, var retrofit: CurrencyApi) {
 
     companion object {
     private const val API_KEY="API_KEY"
@@ -43,5 +44,13 @@ class Repository @Inject constructor (var dataShared: DataShared,var encryptedDa
 
     fun getCurrenciesNames(): ArrayList<String> {
         return dataShared.getCurrenciesNames()
+    }
+
+    fun getFavoriteCurrencies(): ArrayList<CurrencyFavorite>? {
+        return dataShared.getFavoriteCurrencies()
+    }
+
+    fun saveFavoriteCurrencies(currencies:ArrayList<CurrencyFavorite>) {
+        return dataShared.saveFavoriteCurrencies(currencies)
     }
 }

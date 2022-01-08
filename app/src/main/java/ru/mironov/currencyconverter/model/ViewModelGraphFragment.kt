@@ -16,10 +16,10 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewModel() {
+open class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewModel() {
 
     @Inject
-    lateinit var repository: Repository
+    protected lateinit var repository: Repository
 
     private val arrayHistory = ArrayList<CurrencyHistory>()
 
