@@ -20,8 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.mironov.currency_converter.util.FormatNumbers.formatDoubleToString
-import ru.mironov.currency_converter.util.FormatNumbers.getDoubleFromText
+import ru.mironov.currencyconverter.util.FormatNumbers.formatDoubleToString
+import ru.mironov.currencyconverter.util.FormatNumbers.getDoubleFromText
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentCurrenciesBinding
@@ -107,6 +107,7 @@ class CurrenciesFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        binding.firstRow.currencyRate.addTextChangedListener(null)
     }
 
     private fun setupFirstRow(currencyRate: CurrencyRate) {
@@ -124,16 +125,16 @@ class CurrenciesFragment : Fragment() {
             override fun onClickListener(clickedItem: CurrencyViewHolder) {
                 //On Recycler Item Clicked
 
+                binding.firstRow.currencyRate.removeTextChangedListener(textChangeListener)
+
                 //Lock to edit
                 if (recyclerView.findViewHolderForAdapterPosition(0) != null) {
                     val firstItem =
                         recyclerView.findViewHolderForAdapterPosition(0) as CurrencyViewHolder
                     firstItem.binding.currencyRate.inputType = InputType.TYPE_NULL
-                    firstItem.binding.currencyRate.removeTextChangedListener(textChangeListener)
                 }
 
                 //Unlock to edit clicked
-                //clickedItem.binding.currencyRate.addTextChangedListener(textChangeListener)
                 clickedItem.binding.currencyRate.inputType = InputType.TYPE_CLASS_NUMBER
                 clickedItem.binding.currencyRate.requestFocus()
 
@@ -145,9 +146,10 @@ class CurrenciesFragment : Fragment() {
                     binding.firstRow.currencyIcon
                 )
 
+                viewModel.responseCurrency=binding.firstRow.currencyName.text.toString()
                 viewModel.swap(clickedItem.bindingAdapterPosition)
                 adapter.swap(0, clickedItem.bindingAdapterPosition)
-
+                binding.firstRow.currencyRate.addTextChangedListener(textChangeListener)
             }
         }, locale)
 

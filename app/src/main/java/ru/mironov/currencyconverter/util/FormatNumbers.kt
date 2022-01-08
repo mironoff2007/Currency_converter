@@ -1,4 +1,4 @@
-package ru.mironov.currency_converter.util
+package ru.mironov.currencyconverter.util
 
 import android.util.Log
 import java.text.DecimalFormat

@@ -109,11 +109,7 @@ open class ViewModelCurrenciesFragment @Inject constructor(val context: Context)
             synchronized(arrayRates) {
                 val convRate = arrayRates[pos].rate
 
-                responseCurrency = arrayRates[pos].name
-
-                val tempCur = arrayRates[pos]
-                arrayRates.removeAt(pos)
-                arrayRates.add(0, tempCur)
+                Collections.swap(arrayRates,0,pos)
 
                 arrayRates.forEach {
                     it.rate = it.rate / convRate

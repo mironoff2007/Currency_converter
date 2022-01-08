@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.mironov.currencyconverter.model.CurrencyRate
-import ru.mironov.currency_converter.util.FormatNumbers.formatDoubleToString
+import ru.mironov.currencyconverter.util.FormatNumbers.formatDoubleToString
 import ru.mironov.currencyconverter.databinding.ItemCurrencyBinding
 import ru.mironov.currencyconverter.util.FlagSetter.setFlag
 import java.util.*
 
 class CurrenciesAdapter(
     private val listener: ItemClickListener<CurrencyRate>,
-    private val locale:Locale
+    private val locale: Locale
 ) :
     RecyclerView.Adapter<CurrencyViewHolder>(), View.OnClickListener {
 
@@ -31,19 +31,22 @@ class CurrenciesAdapter(
 
         val currency = rates[position]
         with(holder.binding) {
-            if (position == 0) {
-                //Make first row editable with listener
-                currencyRate.textLocale = locale
-                currencyRate.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
-                //currencyRate.addTextChangedListener(textChangeListener)
+
+            if (position === 0) {
+                currencyRate.visibility = View.GONE
+                currencyName.visibility = View.GONE
+                currencyIcon.visibility = View.INVISIBLE
             } else {
+                //Update currencies
+                currencyIcon.visibility = View.VISIBLE
+                currencyRate.visibility = View.VISIBLE
+                currencyName.visibility = View.VISIBLE
                 currencyRate.inputType = InputType.TYPE_NULL
-                //currencyRate.removeTextChangedListener(textChangeListener)
+                currencyName.text = currency.name
+                currencyRate.setText(formatDoubleToString(currency.rate, locale))
+                setFlag(currency.name, currencyIcon)
             }
-            //Update currencies
-            currencyName.text = currency.name
-            currencyRate.setText(formatDoubleToString(currency.rate, locale))
-            setFlag(currency.name,currencyIcon)
+
         }
 
         val itemBinding = holder.binding
@@ -60,11 +63,8 @@ class CurrenciesAdapter(
     override fun onClick(v: View?) {}
 
     fun swap(pos1: Int, pos2: Int) {
-        val tempCur = rates[pos2]
-        rates.removeAt(pos2)
-        rates.add(pos1, tempCur)
+        Collections.swap(rates,pos1,pos2)
+        notifyItemRangeChanged(pos1,pos2-pos1)
         notifyItemMoved(pos2, pos1)
-        notifyItemChanged(1)
-        notifyItemChanged(pos2)
     }
 }
