@@ -1,10 +1,14 @@
 package ru.mironov.currencyconverter.ui.recyclerview
 
+import android.annotation.SuppressLint
+import android.graphics.Color.red
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.model.CurrencyRate
 import ru.mironov.currencyconverter.util.FormatNumbers.formatDoubleToString
 import ru.mironov.currencyconverter.databinding.ItemCurrencyBinding
@@ -27,10 +31,12 @@ class CurrenciesAdapter(
         return CurrencyViewHolder(binding)
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: CurrencyViewHolder, position: Int) {
 
         val currency = rates[position]
         with(holder.binding) {
+
 
             if (position === 0) {
                 currencyRate.visibility = View.GONE
@@ -46,6 +52,8 @@ class CurrenciesAdapter(
                 currencyRate.setText(formatDoubleToString(currency.rate, locale))
                 setFlag(currency.name, currencyIcon)
             }
+            currencyRate.isEnabled = false
+            currencyRate.setTextColor(ContextCompat.getColor(currencyRate.context, R.color.black));
 
         }
 
