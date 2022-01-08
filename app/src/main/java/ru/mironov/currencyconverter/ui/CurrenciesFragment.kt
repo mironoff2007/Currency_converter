@@ -107,7 +107,7 @@ class CurrenciesFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        binding.firstRow.currencyRate.addTextChangedListener(null)
+        binding.firstRow.currencyRate.removeTextChangedListener(textChangeListener)
     }
 
     private fun setupFirstRow(currencyRate: CurrencyRate) {
