@@ -2,9 +2,12 @@ package ru.mironov.currencyconverter.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.coroutineScope
@@ -22,6 +25,7 @@ import ru.mironov.currencyconverter.model.CurrencyFavorite
 import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
+import ru.mironov.currencyconverter.ui.recyclerview.CheckBoxChangeListener
 import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesFavoriteAdapter
 import ru.mironov.currencyconverter.ui.recyclerview.CurrencyFavoriteViewHolder
 import java.util.*
@@ -43,6 +47,7 @@ class CurrenciesFavoriteFragment : Fragment() {
 
     private var timerProgressBar: Job? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireContext().appComponent.inject(this)
@@ -62,9 +67,9 @@ class CurrenciesFavoriteFragment : Fragment() {
         adapterSetup()
         setupObserver()
 
-        val list=ArrayList<CurrencyFavorite>()
-        viewModel.repository.getCurrenciesNames().forEach(){
-            list.add(CurrencyFavorite(it,false))
+        val list = ArrayList<CurrencyFavorite>()
+        viewModel.repository.getCurrenciesNames().forEach() {
+            list.add(CurrencyFavorite(it, false))
         }
         populateRecycler(list)
 
@@ -77,14 +82,27 @@ class CurrenciesFavoriteFragment : Fragment() {
     }
 
     private fun adapterSetup() {
-        adapter = CurrenciesFavoriteAdapter(object :
-            CurrenciesFavoriteAdapter.ItemClickListener<CurrencyFavorite> {
-            override fun onClickListener(clickedItem: CurrencyFavoriteViewHolder) {
-                //On Recycler Item Clicked
+        adapter = CurrenciesFavoriteAdapter(
+            object :
+                CurrenciesFavoriteAdapter.ItemClickListener<CurrencyFavoriteViewHolder> {
+                override fun onClickListener(clickedItem: CurrencyFavoriteViewHolder) {
+                    //On Recycler Item Clicked
 
 
+                }
+            },
+            object: CheckBoxChangeListener() {
+                @SuppressLint("ResourceAsColor")
+                override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+
+                    Log.d("My_tag", buttonView?.tag.toString())
+
+                    adapter.favoriteCurrencies[buttonView?.tag.toString().toInt()].isFavorite = isChecked
+                    adapter.notifyItemChanged(buttonView?.tag.toString().toInt())
+
+                }
             }
-        })
+        )
 
         val layoutManager = LinearLayoutManager(this.requireContext())
         binding.recyclerView.layoutManager = layoutManager
@@ -96,7 +114,8 @@ class CurrenciesFavoriteFragment : Fragment() {
             )
         )
         //Removes flickering on range update
-        (binding.recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        (binding.recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+            false
     }
 
     private fun populateRecycler(data: ArrayList<CurrencyFavorite>) {
