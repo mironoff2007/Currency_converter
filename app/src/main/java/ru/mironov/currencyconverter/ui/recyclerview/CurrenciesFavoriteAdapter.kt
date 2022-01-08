@@ -41,7 +41,7 @@ class CurrenciesFavoriteAdapter(
 
             currencyName.text = currency.name
             currencyCheck.tag=position
-            setFlag(currency.name, currencyIcon)
+            setFlag(currency.name.toString(), currencyIcon)
 
             holder.binding.currencyCheck.setOnCheckedChangeListener (null)
 

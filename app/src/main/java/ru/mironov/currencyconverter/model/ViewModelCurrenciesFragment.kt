@@ -16,7 +16,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : ViewModel() {
+ class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : ViewModel() {
 
     @Inject
     lateinit var repository: Repository

@@ -67,11 +67,11 @@ class CurrenciesFavoriteFragment : Fragment() {
         adapterSetup()
         setupObserver()
 
-        val list = ArrayList<CurrencyFavorite>()
-        viewModel.repository.getCurrenciesNames().forEach() {
-            list.add(CurrencyFavorite(it, false))
+        val list = viewModel.repository.dataShared.getFavoriteCurrencies()
+
+        if (list != null) {
+            populateRecycler(list)
         }
-        populateRecycler(list)
 
         return binding.root
     }
@@ -79,6 +79,11 @@ class CurrenciesFavoriteFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.repository.dataShared.saveFavoriteCurrencies(adapter.favoriteCurrencies)
     }
 
     private fun adapterSetup() {

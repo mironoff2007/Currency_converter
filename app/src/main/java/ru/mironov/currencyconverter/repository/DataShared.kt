@@ -3,6 +3,7 @@ package ru.mironov.currencyconverter.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import ru.mironov.currencyconverter.model.CurrencyFavorite
 
 class DataShared(context: Context, name: String) {
@@ -24,11 +25,11 @@ class DataShared(context: Context, name: String) {
 
     fun getFavoriteCurrencies(): ArrayList<CurrencyFavorite>? {
         val gson = Gson()
-        val gsonString = pref.getString(NUMBER_OF_CURRENCIES, "")
+        val gsonString = pref.getString(CURRENCIES_FAVORITE_KEY, "")
 
         return gson.fromJson(
             gsonString,
-            ArrayList<CurrencyFavorite>()::class.java
+            object : TypeToken<ArrayList<CurrencyFavorite?>?>() {}.type
         )
     }
 

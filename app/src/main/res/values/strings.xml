@@ -13,4 +13,5 @@
         Чтобы получить ключ зарегистрируйтесь на https://freecurrencyapi.net/</string>
     <string name="hit_rate_limit_error_message">Вы достигли предела количества запросов</string>
     <string name="set_favorite">Задайте избранные валюты</string>
+    <string name="check_all">выбрать все</string>
 </resources>
