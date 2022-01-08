@@ -27,16 +27,6 @@ open class ViewModelGraphFragment @Inject constructor(val context: Context) : Vi
 
     private var ratesObject: JsonHistory? = null
 
-    fun getFavoriteCurrenciesNames(): ArrayList<String> {
-        val list=ArrayList<String>()
-
-        repository.getFavoriteCurrencies()?.forEach(){
-            if(it.name!=null&&it.isFavorite){
-            list.add(it.name!!)}
-        }
-
-        return list
-    }
 
     fun getCurrencyHistory(
         nameBaseCurrency: String,
@@ -83,8 +73,12 @@ open class ViewModelGraphFragment @Inject constructor(val context: Context) : Vi
                 }
 
                 override fun onFailure(call: Call<JsonHistory?>, t: Throwable) {
-                    mutableStatus.postValue(Status.ERROR(t.message.toString(),0))
+                    mutableStatus.postValue(Status.ERROR(t.message.toString(), 0))
                 }
             })
+    }
+
+    fun getFavoriteCurrenciesNames(): ArrayList<String> {
+        return repository.getFavoriteCurrenciesNames()
     }
 }

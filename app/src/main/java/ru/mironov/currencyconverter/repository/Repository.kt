@@ -53,4 +53,15 @@ open class Repository @Inject constructor (protected var dataShared: DataShared,
     fun saveFavoriteCurrencies(currencies:ArrayList<CurrencyFavorite>) {
         return dataShared.saveFavoriteCurrencies(currencies)
     }
+
+    fun getFavoriteCurrenciesNames(): ArrayList<String> {
+        val list=ArrayList<String>()
+
+        getFavoriteCurrencies()?.forEach(){
+            if(it.name!=null&&it.isFavorite){
+                list.add(it.name!!)}
+        }
+
+        return list
+    }
 }

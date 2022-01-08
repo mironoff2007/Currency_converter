@@ -22,6 +22,12 @@ open class ViewModelSetKeyFragment @Inject constructor(val context: Context) : V
 
     fun saveNames(arrayNames: ArrayList<String>){
         repository.saveCurrenciesNames(arrayNames)
+
+        val list=ArrayList<CurrencyFavorite>()
+        arrayNames.forEach(){
+            list.add(CurrencyFavorite(it,true))
+        }
+        repository.saveFavoriteCurrencies(list)
     }
 
     fun getCurrencyRate(apiKey: String) {

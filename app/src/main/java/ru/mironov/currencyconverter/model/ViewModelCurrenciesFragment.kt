@@ -16,10 +16,10 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
- open class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : ViewModel() {
+open class ViewModelCurrenciesFragment @Inject constructor(val context: Context) : ViewModel() {
 
     @Inject
-     protected lateinit var repository: Repository
+    protected lateinit var repository: Repository
 
     var mutableStatus = MutableLiveData<Status>()
 
@@ -55,9 +55,16 @@ import kotlin.collections.ArrayList
                                         1.0
                                     )
                                 )
+
+                                //get Favorite
+                                val favorite = repository.getFavoriteCurrenciesNames()
+
                                 //Set currencies to convert to
                                 ratesObject?.getRates()?.forEach { cur ->
-                                    if (cur.key != ratesObject?.getBaseCurrency().toString()) {
+                                    //IsFavorite and not base currency
+                                    if (cur.key != ratesObject?.getBaseCurrency()
+                                            .toString() && favorite.contains(cur.key)
+                                    ) {
                                         arrayRates.add(CurrencyRate(cur.key, cur.value))
                                     }
                                 }
@@ -127,11 +134,11 @@ import kotlin.collections.ArrayList
         }
     }
 
-     fun getFavoriteCurrencies(): ArrayList<CurrencyFavorite>? {
+    fun getFavoriteCurrencies(): ArrayList<CurrencyFavorite>? {
         return repository.getFavoriteCurrencies()
-     }
+    }
 
-     fun saveFavoriteCurrencies(favoriteCurrencies: ArrayList<CurrencyFavorite>) {
+    fun saveFavoriteCurrencies(favoriteCurrencies: ArrayList<CurrencyFavorite>) {
         repository.saveFavoriteCurrencies(favoriteCurrencies)
-     }
- }
+    }
+}

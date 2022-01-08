@@ -65,5 +65,6 @@ class CurrenciesAdapter(
         rates.add(pos1, tempCur)
         notifyItemMoved(pos2, pos1)
         notifyItemChanged(1)
+        notifyItemChanged(pos2)
     }
 }
