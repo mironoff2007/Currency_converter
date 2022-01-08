@@ -106,8 +106,8 @@ class CurrenciesFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        _binding = null
         binding.firstRow.currencyRate.removeTextChangedListener(textChangeListener)
+        _binding = null
     }
 
     private fun setupFirstRow(currencyRate: CurrencyRate) {
@@ -146,7 +146,7 @@ class CurrenciesFragment : Fragment() {
                     binding.firstRow.currencyIcon
                 )
 
-                viewModel.responseCurrency=binding.firstRow.currencyName.text.toString()
+                viewModel.responseCurrency = binding.firstRow.currencyName.text.toString()
                 viewModel.swap(clickedItem.bindingAdapterPosition)
                 adapter.swap(0, clickedItem.bindingAdapterPosition)
                 binding.firstRow.currencyRate.addTextChangedListener(textChangeListener)
@@ -166,7 +166,7 @@ class CurrenciesFragment : Fragment() {
         (binding.recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
-    private fun populateRecycler( data: LinkedList<CurrencyRate>) {
+    private fun populateRecycler(data: LinkedList<CurrencyRate>) {
         //Calculate all currencies using input
         if (binding.firstRow.currencyName.text == viewModel.responseCurrency) {
             viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
