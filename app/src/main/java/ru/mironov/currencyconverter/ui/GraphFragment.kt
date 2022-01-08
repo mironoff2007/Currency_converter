@@ -106,7 +106,7 @@ class GraphFragment : Fragment() {
 
     private fun initSpinners() {
 
-        currenciesNames = viewModel.getCurrenciesNames()
+        currenciesNames = viewModel.getFavoriteCurrenciesNames()
 
         spinnerFromAdapter =
             CustomAdapter(requireContext(), currenciesNames)

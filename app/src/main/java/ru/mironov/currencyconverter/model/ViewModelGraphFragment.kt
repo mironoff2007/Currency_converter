@@ -27,8 +27,15 @@ open class ViewModelGraphFragment @Inject constructor(val context: Context) : Vi
 
     private var ratesObject: JsonHistory? = null
 
-    fun getCurrenciesNames(): ArrayList<String> {
-        return repository.getCurrenciesNames().clone() as ArrayList<String>
+    fun getFavoriteCurrenciesNames(): ArrayList<String> {
+        val list=ArrayList<String>()
+
+        repository.getFavoriteCurrencies()?.forEach(){
+            if(it.name!=null&&it.isFavorite){
+            list.add(it.name!!)}
+        }
+
+        return list
     }
 
     fun getCurrencyHistory(
