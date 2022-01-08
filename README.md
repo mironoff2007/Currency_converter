@@ -7,5 +7,5 @@ https://freecurrencyapi.net API is used.
 -Retrofit\
 -MPAndroidChart
 
-![](https://github.com/mironoff2007/Currency_converter/blob/master/currency_converter.gif)
+<img src="https://github.com/mironoff2007/Currency_converter/blob/master/currency_converter.gif" width="500" height="800"/>
 
