@@ -64,6 +64,21 @@ class CurrenciesFavoriteFragment : Fragment() {
         viewModel =
             requireContext().appComponent.factory.create(ViewModelCurrenciesFragment::class.java)
 
+        binding.checkAll.setOnCheckedChangeListener(object : CheckBoxChangeListener() {
+            @SuppressLint("ResourceAsColor")
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
+
+                    adapter.favoriteCurrencies.forEach() {
+                        it.isFavorite = isChecked
+                    }
+                    viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Main) {
+                        adapter.notifyChanges()
+                    }
+                }
+            }
+        })
+
         adapterSetup()
         setupObserver()
 
@@ -92,19 +107,14 @@ class CurrenciesFavoriteFragment : Fragment() {
                 CurrenciesFavoriteAdapter.ItemClickListener<CurrencyFavoriteViewHolder> {
                 override fun onClickListener(clickedItem: CurrencyFavoriteViewHolder) {
                     //On Recycler Item Clicked
-
-
                 }
             },
-            object: CheckBoxChangeListener() {
+            object : CheckBoxChangeListener() {
                 @SuppressLint("ResourceAsColor")
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-
-                    Log.d("My_tag", buttonView?.tag.toString())
-
-                    adapter.favoriteCurrencies[buttonView?.tag.toString().toInt()].isFavorite = isChecked
+                    adapter.favoriteCurrencies[buttonView?.tag.toString().toInt()].isFavorite =
+                        isChecked
                     adapter.notifyItemChanged(buttonView?.tag.toString().toInt())
-
                 }
             }
         )
