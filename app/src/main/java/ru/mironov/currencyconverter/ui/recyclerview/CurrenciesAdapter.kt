@@ -21,7 +21,7 @@ class CurrenciesAdapter(
 ) :
     RecyclerView.Adapter<CurrencyViewHolder>(), View.OnClickListener {
 
-    var rates: LinkedList<CurrencyRate> = LinkedList()
+    var rates: ArrayList<CurrencyRate> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
         val inflater = LayoutInflater.from(parent.context)

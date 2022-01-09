@@ -78,13 +78,13 @@ open class ViewModelCurrenciesFragment @Inject constructor(val context: Context)
                                     }
                                 }
                             }
-                            val linkedArray = LinkedList<CurrencyRate>()
+                            val array = ArrayList<CurrencyRate>()
 
                             arrayRates.forEach() {
-                                linkedArray.add(it.clone() as CurrencyRate)
+                                array.add(it.clone() as CurrencyRate)
                             }
 
-                            mutableStatus.postValue(Status.DATA(linkedArray as LinkedList<Objects>))
+                            mutableStatus.postValue(Status.DATA(array as java.util.ArrayList<Objects>))
                         }
                     } else {
                         if (response.errorBody() != null) {
@@ -120,13 +120,13 @@ open class ViewModelCurrenciesFragment @Inject constructor(val context: Context)
 
     fun calculateCurrencies(value: Double) {
         if (arrayRates.isNotEmpty()) {
-            val changedRates = LinkedList<CurrencyRate>()
+            val changedRates = ArrayList<CurrencyRate>()
 
             arrayRates.forEach { it ->
                 changedRates.add(CurrencyRate(it.name, it.rate * value))
             }
             changedRates[0].rate = value
-            mutableStatus.postValue(Status.DATA(changedRates as LinkedList<Objects>))
+            mutableStatus.postValue(Status.DATA(changedRates as ArrayList<Objects>))
         }
     }
 

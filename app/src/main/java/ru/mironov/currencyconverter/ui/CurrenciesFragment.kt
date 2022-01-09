@@ -166,7 +166,7 @@ class CurrenciesFragment : Fragment() {
         (binding.recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
-    private fun populateRecycler(data: LinkedList<CurrencyRate>) {
+    private fun populateRecycler(data: ArrayList<CurrencyRate>) {
         //Calculate all currencies using input
         if (binding.firstRow.currencyName.text == viewModel.responseCurrency) {
             viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
@@ -189,7 +189,7 @@ class CurrenciesFragment : Fragment() {
         viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
             when (status) {
                 is Status.DATA -> {
-                    populateRecycler(status.someData as LinkedList<CurrencyRate>)
+                    populateRecycler(status.someData as ArrayList<CurrencyRate>)
                     timerProgressBar?.cancel()
                     binding.progressBar.visibility = View.GONE
                 }
