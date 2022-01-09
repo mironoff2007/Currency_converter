@@ -31,7 +31,7 @@ open class ViewModelSetKeyFragment @Inject constructor(val context: Context) : V
     }
 
     fun getCurrencyRate(apiKey: String) {
-        mutableStatus.postValue(Status.LOADING())
+        mutableStatus.postValue(Status.LOADING)
         repository.getRatesFromNetwork(apiKey)
             ?.enqueue(object : Callback<JsonRates?> {
                 override fun onResponse(

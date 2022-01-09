@@ -34,7 +34,7 @@ open class ViewModelGraphFragment @Inject constructor(val context: Context) : Vi
         dateFrom: String,
         dateTo: String
     ) {
-        mutableStatus.postValue(Status.LOADING())
+        mutableStatus.postValue(Status.LOADING)
         repository.getHistoryFromNetwork(nameBaseCurrency, dateFrom, dateTo)!!
             .enqueue(object : Callback<JsonHistory?> {
                 override fun onResponse(

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,7 @@ import ru.mironov.currencyconverter.ui.recyclerview.CurrencyViewHolder
 import ru.mironov.currencyconverter.util.CurrencyDiffUtilCallback
 import ru.mironov.currencyconverter.util.FlagSetter.setFlag
 import java.util.*
+import kotlin.concurrent.fixedRateTimer
 
 class CurrenciesFragment : Fragment() {
 
@@ -188,6 +190,10 @@ class CurrenciesFragment : Fragment() {
     private fun setupObserver() {
         viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
             when (status) {
+                is Status.RESPONSE -> {
+                    Log.d("My_tag","response")
+                    viewModel.calculateCurrencies(getDoubleFromText(binding.firstRow.currencyRate.text.toString()))
+                }
                 is Status.DATA -> {
                     populateRecycler(status.someData as ArrayList<CurrencyRate>)
                     timerProgressBar?.cancel()

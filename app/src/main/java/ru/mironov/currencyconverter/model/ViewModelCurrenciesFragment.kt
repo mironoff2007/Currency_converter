@@ -34,7 +34,7 @@ open class ViewModelCurrenciesFragment @Inject constructor(val context: Context)
     }
 
     fun getCurrencyRate(name: String) {
-        mutableStatus.postValue(Status.LOADING())
+        mutableStatus.postValue(Status.LOADING)
         repository.getRatesBaseSpecificFromNetwork(name)
             ?.enqueue(object : Callback<JsonRates?> {
                 override fun onResponse(
@@ -84,7 +84,7 @@ open class ViewModelCurrenciesFragment @Inject constructor(val context: Context)
                                 array.add(it.clone() as CurrencyRate)
                             }
 
-                            mutableStatus.postValue(Status.DATA(array as java.util.ArrayList<Objects>))
+                            mutableStatus.postValue(Status.RESPONSE)
                         }
                     } else {
                         if (response.errorBody() != null) {
