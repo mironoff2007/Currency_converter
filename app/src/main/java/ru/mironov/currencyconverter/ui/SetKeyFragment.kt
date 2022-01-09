@@ -48,11 +48,8 @@ class SetKeyFragment : Fragment(R.layout.fragment_setkey) {
     private fun setApiKey() {
         val apiKey = binding.editText.text
 
-        if (apiKey.isNullOrBlank()) {
-            Toast.makeText(context, getString(R.string.api_key_is_empty), Toast.LENGTH_LONG).show()
-        } else {
-            viewModel.getCurrencyRate(apiKey.toString())
-        }
+        viewModel.getCurrencyRate(apiKey.toString())
+
     }
 
     private fun setupObserver() {
