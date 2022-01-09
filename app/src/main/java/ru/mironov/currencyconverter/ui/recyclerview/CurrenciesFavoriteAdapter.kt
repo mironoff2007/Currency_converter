@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.model.CurrencyRate
@@ -46,12 +47,12 @@ class CurrenciesFavoriteAdapter(
             holder.binding.currencyCheck.setOnCheckedChangeListener (null)
 
             if(currency.isFavorite){
-                currencyName.setTextColor(R.color.black)
+                currencyName.setTextColor(ContextCompat.getColor(currencyName.context, R.color.black))
                 currencyIcon.imageAlpha=255
                 currencyCheck.isChecked=true
             }
             else{
-                currencyName.setTextColor(R.color.gray)
+                currencyName.setTextColor(ContextCompat.getColor(currencyName.context, R.color.gray))
                 currencyIcon.imageAlpha=100
                 currencyCheck.isChecked=false
             }
