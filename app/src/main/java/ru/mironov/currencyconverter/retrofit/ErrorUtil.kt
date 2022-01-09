@@ -36,6 +36,9 @@ object ErrorUtil {
             429 -> {
                 message = context.getString(R.string.hit_rate_limit_error_message)
             }
+            500 ->{
+                message= context.getString(R.string.server_error_message)
+            }
         }
         return message
 

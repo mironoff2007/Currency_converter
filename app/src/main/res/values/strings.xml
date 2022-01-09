@@ -11,7 +11,10 @@
     <string name="without_api_key_description">
         Допустимое количество запросов без ключа - 10 в час.
         Чтобы получить ключ зарегистрируйтесь на https://freecurrencyapi.net/</string>
+
     <string name="hit_rate_limit_error_message">Вы достигли предела количества запросов</string>
+    <string name="server_error_message">Внутренняя ошибка сервера</string>
+
     <string name="set_favorite">Задайте избранные валюты</string>
     <string name="check_all">выбрать все</string>
 </resources>
