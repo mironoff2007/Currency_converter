@@ -1,6 +1,5 @@
 package ru.mironov.currencyconverter.model
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.mironov.currencyconverter.repository.Repository
@@ -16,7 +15,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-open class ViewModelGraphFragment @Inject constructor(val context: Context) : ViewModel() {
+open class ViewModelGraphFragment @Inject constructor() : ViewModel() {
 
     @Inject
     protected lateinit var repository: Repository

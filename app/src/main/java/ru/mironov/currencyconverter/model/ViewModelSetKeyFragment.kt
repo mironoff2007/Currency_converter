@@ -1,6 +1,5 @@
 package ru.mironov.currencyconverter.model
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import retrofit2.Call
@@ -11,7 +10,7 @@ import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.retrofit.JsonRates
 import javax.inject.Inject
 
-open class ViewModelSetKeyFragment @Inject constructor(val context: Context) : ViewModel() {
+open class ViewModelSetKeyFragment @Inject constructor() : ViewModel() {
 
     @Inject
     protected lateinit var repository:Repository
