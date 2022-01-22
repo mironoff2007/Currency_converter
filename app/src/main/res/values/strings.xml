@@ -18,4 +18,7 @@
     <string name="set_favorite">Задайте избранные валюты</string>
     <string name="check_all">выбрать все</string>
     <string name="tag_tabs_fragment">tabsFragment</string>
+    <string name="favorite_is_empty">Favorite is empty. USD and EUR are set by default</string>
+    <string name="favorite_is_only_one">Favorite is only one currency. Added currency - </string>
+
 </resources>

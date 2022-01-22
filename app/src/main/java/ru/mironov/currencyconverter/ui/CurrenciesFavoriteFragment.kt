@@ -39,14 +39,9 @@ class CurrenciesFavoriteFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val progressBarDelay: Long = 500
-
     private var errorToast: Toast? = null
 
     private lateinit var adapter: CurrenciesFavoriteAdapter
-
-    private var timerProgressBar: Job? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +75,6 @@ class CurrenciesFavoriteFragment : Fragment() {
         })
 
         adapterSetup()
-        setupObserver()
 
         val list = viewModel.getFavoriteCurrencies()
 
@@ -91,6 +85,61 @@ class CurrenciesFavoriteFragment : Fragment() {
         return binding.root
     }
 
+
+    /**
+     Set default currencies.
+     Set EUR and USD if no is favorite
+     Set USD if only one is favorite, but not USD
+     Set EUR if only one is favorite, but USD is
+     */
+    fun addDefault(){
+        //Two currencies are needed
+        //Set two by default
+        var noFavorite = true
+        var count=0
+        var isUsdFav=false
+        var usdPos=0
+        var eurPos=0
+        var addedCurrencyName=""
+        adapter.favoriteCurrencies.forEach() {
+            if (it.isFavorite) {
+                noFavorite = false
+                count++
+                if(it.name=="USD"){
+                    isUsdFav=true
+                }
+            }
+            if(it.name=="USD"){
+                usdPos=adapter.favoriteCurrencies.indexOf(it)
+            }
+            if(it.name=="EUR"){
+                eurPos=adapter.favoriteCurrencies.indexOf(it)
+            }
+        }
+        if (noFavorite) {
+            //No favorite currencies
+            adapter.favoriteCurrencies.forEach(){
+                if(it.name=="EUR"||it.name=="USD"){
+                    it.isFavorite=true
+                }
+            }
+            Toast.makeText(this.context, getString(R.string.favorite_is_empty), Toast.LENGTH_LONG).show()
+        }
+        //Only one currency is favorite
+        //Add USD or EUR
+        else if(count<2){
+            if (isUsdFav){
+                adapter.favoriteCurrencies[eurPos].isFavorite=true
+                addedCurrencyName="EUR"
+            }
+            else{
+                adapter.favoriteCurrencies[usdPos].isFavorite=true
+                addedCurrencyName="USD"
+            }
+            Toast.makeText(this.context, getString(R.string.favorite_is_only_one)+" "+addedCurrencyName, Toast.LENGTH_LONG).show()
+
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -98,6 +147,7 @@ class CurrenciesFavoriteFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        addDefault()
         viewModel.saveFavoriteCurrencies(adapter.favoriteCurrencies)
     }
 
@@ -136,50 +186,5 @@ class CurrenciesFavoriteFragment : Fragment() {
     private fun populateRecycler(data: ArrayList<CurrencyFavorite>) {
         adapter.favoriteCurrencies = data
         adapter.notifyChanges()
-    }
-
-    @SuppressLint("ShowToast")
-    private fun setupObserver() {
-        viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
-            when (status) {
-                is Status.DATA -> {
-                    timerProgressBar?.cancel()
-                    binding.progressBar.visibility = View.GONE
-                }
-                is Status.LOADING -> {
-                    //Show progress bar only for long response
-                    timerProgressBar =
-                        viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Default) {
-                            delay(progressBarDelay)
-                            viewLifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.Main) {
-                                binding.progressBar.visibility = View.VISIBLE
-                            }
-                        }
-                }
-                is Status.ERROR -> {
-                    timerProgressBar?.cancel()
-                    binding.progressBar.visibility = View.GONE
-
-                    errorToast?.cancel()
-                    errorToast = if (viewModel.isRatesEmpty()) {
-                        Toast.makeText(
-                            this.requireContext(),
-                            getString(R.string.error) + " - " + ErrorUtil.getErrorMessage(
-                                requireContext(),
-                                status.code
-                            ),
-                            Toast.LENGTH_LONG
-                        )
-                    } else {
-                        Toast.makeText(
-                            this.requireContext(),
-                            getString(R.string.from_cache),
-                            Toast.LENGTH_LONG
-                        )
-                    }
-                    errorToast?.show()
-                }
-            }
-        }
     }
 }

@@ -4,16 +4,12 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import ru.mironov.currencyconverter.R
-import ru.mironov.currencyconverter.model.CurrencyRate
 import ru.mironov.currencyconverter.databinding.ItemCurrencyFavoriteBinding
 import ru.mironov.currencyconverter.model.CurrencyFavorite
 import ru.mironov.currencyconverter.util.FlagSetter.setFlag
-import java.util.*
 import kotlin.collections.ArrayList
 
 class CurrenciesFavoriteAdapter(
@@ -70,12 +66,9 @@ class CurrenciesFavoriteAdapter(
         }
     }
 
-    interface ItemOnCheckedChangeListener {
-
-    }
-
     override fun onClick(v: View?) {}
 
+    @SuppressLint("NotifyDataSetChanged")
     fun notifyChanges(){
         this.notifyDataSetChanged()
     }

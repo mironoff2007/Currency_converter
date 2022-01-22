@@ -184,7 +184,6 @@ class CurrenciesFragment : Fragment() {
         viewModel.mutableStatus.observe(this.viewLifecycleOwner) { status ->
             when (status) {
                 is Status.RESPONSE -> {
-                    Log.d("My_tag","response")
                     viewModel.calculateCurrencies(getDoubleFromText(binding.firstRow.currencyRate.text.toString()))
                 }
                 is Status.DATA -> {
