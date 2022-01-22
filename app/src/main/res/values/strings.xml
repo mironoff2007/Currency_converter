@@ -17,4 +17,5 @@
 
     <string name="set_favorite">Задайте избранные валюты</string>
     <string name="check_all">выбрать все</string>
+    <string name="tag_tabs_fragment">tabsFragment</string>
 </resources>

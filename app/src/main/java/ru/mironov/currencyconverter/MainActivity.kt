@@ -73,4 +73,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun getTabsDestination(): Int = R.id.tabsFragment
 
+
+
 }

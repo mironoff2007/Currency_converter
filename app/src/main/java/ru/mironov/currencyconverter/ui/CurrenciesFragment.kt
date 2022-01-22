@@ -35,7 +35,6 @@ import ru.mironov.currencyconverter.ui.recyclerview.CurrencyViewHolder
 import ru.mironov.currencyconverter.util.CurrencyDiffUtilCallback
 import ru.mironov.currencyconverter.util.FlagSetter.setFlag
 import java.util.*
-import kotlin.concurrent.fixedRateTimer
 
 class CurrenciesFragment : Fragment() {
 
@@ -77,7 +76,7 @@ class CurrenciesFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentCurrenciesBinding.inflate(inflater, container, false)
 
@@ -106,12 +105,6 @@ class CurrenciesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.firstRow.currencyRate.removeTextChangedListener(textChangeListener)
-        _binding = null
-    }
-
     private fun setupFirstRow(currencyRate: CurrencyRate) {
         binding.firstRow.currencyRate.textLocale = locale
         binding.firstRow.currencyRate.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
@@ -124,7 +117,7 @@ class CurrenciesFragment : Fragment() {
 
     private fun adapterSetup() {
         adapter = CurrenciesAdapter(object : CurrenciesAdapter.ItemClickListener<CurrencyRate> {
-            override fun onClickListener(clickedItem: CurrencyViewHolder) {
+            override fun onClickListener(item: CurrencyViewHolder) {
                 //On Recycler Item Clicked
 
                 binding.firstRow.currencyRate.removeTextChangedListener(textChangeListener)
@@ -137,20 +130,20 @@ class CurrenciesFragment : Fragment() {
                 }
 
                 //Unlock to edit clicked
-                clickedItem.binding.currencyRate.inputType = InputType.TYPE_CLASS_NUMBER
-                clickedItem.binding.currencyRate.requestFocus()
+                item.binding.currencyRate.inputType = InputType.TYPE_CLASS_NUMBER
+                item.binding.currencyRate.requestFocus()
 
                 //Swap
-                binding.firstRow.currencyName.text = clickedItem.binding.currencyName.text
-                binding.firstRow.currencyRate.text = clickedItem.binding.currencyRate.text
+                binding.firstRow.currencyName.text = item.binding.currencyName.text
+                binding.firstRow.currencyRate.text = item.binding.currencyRate.text
                 setFlag(
                     binding.firstRow.currencyName.text.toString(),
                     binding.firstRow.currencyIcon
                 )
 
                 viewModel.responseCurrency = binding.firstRow.currencyName.text.toString()
-                viewModel.swap(clickedItem.bindingAdapterPosition)
-                adapter.swap(0, clickedItem.bindingAdapterPosition)
+                viewModel.swap(item.bindingAdapterPosition)
+                adapter.swap(0, item.bindingAdapterPosition)
                 binding.firstRow.currencyRate.addTextChangedListener(textChangeListener)
             }
         }, locale)
@@ -234,5 +227,39 @@ class CurrenciesFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val navHostFragment=requireActivity().supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+        if(navHostFragment?.arguments==null) {
+            val args = Bundle()
+            args.putString(CURRENCY_FROM_NAME, binding.firstRow.currencyName.text.toString())
+            if( adapter.rates.size>1){
+            args.putString(CURRENCY_TO_NAME, adapter.rates[1].name)}
+            navHostFragment?.arguments = args
+        }
+        else{
+            navHostFragment!!.requireArguments().putString(CURRENCY_FROM_NAME, binding.firstRow.currencyName.text.toString())
+            if( adapter.rates.size>1){
+            navHostFragment!!.requireArguments().putString(CURRENCY_TO_NAME, adapter.rates[1].name)}
+        }
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.firstRow.currencyRate.removeTextChangedListener(textChangeListener)
+        _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+    }
+
+    companion object{
+        const val CURRENCY_FROM_NAME="CURRENCY_FROM_NAME"
+        const val CURRENCY_TO_NAME="CURRENCY_TO_NAME"
     }
 }

@@ -19,6 +19,10 @@ class CustomAdapter(
     var spinnerTitles: ArrayList<String> = titles
     var mContext: Context = context
 
+    fun getIndexOf(name:String):Int{
+        return spinnerTitles.indexOf(name)
+    }
+
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         return getView(position, convertView, parent)
     }
@@ -49,7 +53,5 @@ class CustomAdapter(
     private class ViewHolder {
         var mFlag: ImageView? = null
         var mName: TextView? = null
-
     }
-
 }

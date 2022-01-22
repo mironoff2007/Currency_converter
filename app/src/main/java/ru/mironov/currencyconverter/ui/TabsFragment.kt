@@ -58,9 +58,13 @@ class TabsFragment:Fragment(R.layout.fragment_tabs) {
         return true
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding=null
+    }
     override fun onDestroy() {
         super.onDestroy()
-        _binding=null
+
     }
 
 }

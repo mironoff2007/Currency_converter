@@ -5,7 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.TabsFragment">
+    tools:context=".ui.TabsFragment"
+    android:tag="@string/tag_tabs_fragment"
+    android:id="@+id/tabsFragment">
 
     <TextView
         android:layout_width="match_parent"
@@ -15,7 +17,7 @@
         android:layout_marginRight="15dp"
         android:textAlignment="center"
         android:text="Tabs Fragment"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView

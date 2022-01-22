@@ -28,6 +28,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IFillFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.utils.Utils
+import kotlinx.android.synthetic.main.fragment_graph.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.mironov.currencyconverter.R
@@ -51,6 +52,7 @@ class GraphFragment : Fragment() {
         private const val PATTERN_DATE_FORMAT = "yyyy-MM-dd"
         private const val MIN_API_DATE = "1999-1-1"
         private const val DAY_MILLIS = 86400000
+        private const val YEAR_STEP_BACK = 1
         private const val scaleAxisLimits = 1.02f
     }
 
@@ -103,6 +105,24 @@ class GraphFragment : Fragment() {
 
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //get args
+        val navHostFragment=requireActivity().supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+        val args = navHostFragment!!.arguments
+
+        val posTo= spinnerToAdapter!!.spinnerTitles.indexOf(args!!.getString(CurrenciesFragment.CURRENCY_TO_NAME))
+        val posFrom=spinnerFromAdapter!!.spinnerTitles.indexOf(args!!.getString(CurrenciesFragment.CURRENCY_FROM_NAME))
+        binding.spinnerTo.setSelection(posTo)
+        binding.spinnerFrom.setSelection(posFrom)
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        }
 
     private fun initSpinners() {
 
@@ -160,6 +180,7 @@ class GraphFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun initDatePickers() {
         //Current date
         val cal: Calendar = Calendar.getInstance()
@@ -196,8 +217,8 @@ class GraphFragment : Fragment() {
 
 
         //Set initial "From" date
-        binding.dateFromButton.text = makeUiDateString(day, month, year - 1)
-        dateFromString = makeRequestDateString(makeUiDateString(day,month,year))
+        binding.dateFromButton.text = makeUiDateString(day, month, year - YEAR_STEP_BACK)
+        dateFromString = makeRequestDateString(makeUiDateString(day,month,year-YEAR_STEP_BACK))
 
         //Limit "From" date
         datePickerDialogFrom =
@@ -238,17 +259,17 @@ class GraphFragment : Fragment() {
         chart = binding.chart1
 
         // background color
-        chart.setBackgroundColor(Color.WHITE);
+        chart.setBackgroundColor(Color.WHITE)
 
         // disable description text
-        chart.description.isEnabled = false;
+        chart.description.isEnabled = false
 
         // enable touch gestures
-        chart.setTouchEnabled(true);
+        chart.setTouchEnabled(true)
 
         // set listeners
         //chart.setOnChartValueSelectedListener(this);
-        chart.setDrawGridBackground(false);
+        chart.setDrawGridBackground(false)
 
         // create marker to display box when values are selected
         val mv = MyMarkerView(
@@ -261,29 +282,28 @@ class GraphFragment : Fragment() {
         chart.marker = mv;
 
         // enable scaling and dragging
-        chart.isDragEnabled = true;
-        chart.setScaleEnabled(true);
-        // chart.setScaleXEnabled(true);
-        // chart.setScaleYEnabled(true);
+        chart.isDragEnabled = true
+        chart.setScaleEnabled(true)
+        // chart.setScaleXEnabled(true)
+        // chart.setScaleYEnabled(true)
 
         // force pinch zoom along both axis
         chart.setPinchZoom(true);
 
 
         // // X-Axis Style // //
-        var xAxis: XAxis = chart.xAxis
+        val xAxis: XAxis = chart.xAxis
 
         // vertical grid lines
         xAxis.enableGridDashedLine(10f, 10f, 0f)
         xAxis.granularity = 1f
         xAxis.labelCount = 4
 
-
         // Formatter to adjust epoch time to readable date
         chart.xAxis.valueFormatter = DateXAxisValueFormatter()
 
         // // Y-Axis Style // //
-        var yAxis: YAxis = chart.axisLeft
+        val yAxis: YAxis = chart.axisLeft
 
         // disable dual axis (only use LEFT axis)
         chart.axisRight.isEnabled = false
@@ -396,10 +416,7 @@ class GraphFragment : Fragment() {
                     dataSets.add(set1) // add the data sets
 
                     // create a data object with the data sets
-                    val data = LineData(dataSets)
-
-                    // set data
-                    chart.data = data
+                    chart.data =LineData(dataSets)
                     chart.invalidate()
                 }
             }
@@ -432,9 +449,12 @@ class GraphFragment : Fragment() {
             }
         }
     }
+    override fun onPause() {
+        super.onPause()
+    }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
         datePickerDialogTo = null
         datePickerDialogFrom = null
@@ -442,5 +462,10 @@ class GraphFragment : Fragment() {
         dateSetListenerFrom = null
         spinnerToAdapter = null
         spinnerFromAdapter = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
 }
