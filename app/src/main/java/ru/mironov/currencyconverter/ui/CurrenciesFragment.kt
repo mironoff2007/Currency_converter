@@ -85,7 +85,9 @@ class CurrenciesFragment : Fragment() {
 
         adapterSetup()
         setupObserver()
-        setupFirstRow(CurrencyRate(getString(R.string.eur), 1.0))
+
+        val currencyName= viewModel.getFirstFavorite()
+        setupFirstRow(CurrencyRate(currencyName!!, 1.0))
 
         viewModel.getCurrencyRate(
             binding.firstRow.currencyName.text.toString()

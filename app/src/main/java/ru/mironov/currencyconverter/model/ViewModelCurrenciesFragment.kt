@@ -137,4 +137,13 @@ open class ViewModelCurrenciesFragment @Inject constructor() : ViewModel() {
     fun saveFavoriteCurrencies(favoriteCurrencies: ArrayList<CurrencyFavorite>) {
         repository.saveFavoriteCurrencies(favoriteCurrencies)
     }
+
+    fun getFirstFavorite(): String? {
+        getFavoriteCurrencies()!!.forEach(){
+            if(it.isFavorite){
+                return it.name
+            }
+        }
+        return ""
+    }
 }
