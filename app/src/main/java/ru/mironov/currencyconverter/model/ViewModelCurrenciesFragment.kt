@@ -146,4 +146,23 @@ open class ViewModelCurrenciesFragment @Inject constructor() : ViewModel() {
         }
         return ""
     }
+
+    fun isInFavorite(name:String): Boolean {
+        getFavoriteCurrencies()!!.forEach(){
+            if(it.isFavorite){
+                if(it.name==name){
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun getSelectedCurrency():String?{
+        return repository.getSelectedCurrency()
+    }
+
+    fun saveSelectedCurrency(name:String){
+        repository.saveSelectedCurrency(name)
+    }
 }

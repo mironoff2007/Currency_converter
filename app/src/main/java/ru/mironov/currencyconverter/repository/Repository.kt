@@ -64,4 +64,12 @@ open class Repository @Inject constructor (protected var dataShared: DataShared,
 
         return list
     }
+
+    fun getSelectedCurrency():String?{
+        return dataShared.getSelectedCurrency()
+    }
+
+    fun saveSelectedCurrency(name:String){
+        dataShared.saveSelectedCurrency(name)
+    }
 }

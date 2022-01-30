@@ -5,26 +5,43 @@ buildscript {
     ext.daggerVersion = "2.37"
     repositories {
         google()
-        jcenter()
         maven { url 'https://jitpack.io' }
-        
+
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.4'
+        classpath 'com.android.tools.build:gradle:7.0.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
+}
+
+plugins {
+    id "scabbard.gradle" version "0.5.0"
+}
+
+scabbard {
+    enabled false
+    outputFormat "svg"
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "com.github.kittinunf.result" && requested.name == "result" && requested.version == "3.0.0") {
+                useVersion("3.0.1")
+                because("Transitive dependency of Scabbard, currently not available on mavenCentral()")
+            }
+        }
     }
 }
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir

@@ -85,13 +85,10 @@ class CurrenciesFragment : Fragment() {
 
         adapterSetup()
         setupObserver()
+        getSelectedCurrencyForFistRow()
 
-        val currencyName= viewModel.getFirstFavorite()
-        setupFirstRow(CurrencyRate(currencyName!!, 1.0))
-
-        viewModel.getCurrencyRate(
-            binding.firstRow.currencyName.text.toString()
-        )
+        //Request rate
+        viewModel.getCurrencyRate(binding.firstRow.currencyName.text.toString())
 
         //Start timer
         /*
@@ -105,6 +102,21 @@ class CurrenciesFragment : Fragment() {
         }
         */
         return binding.root
+    }
+
+    private fun getSelectedCurrencyForFistRow() {
+        val selectedCurrency = viewModel.getSelectedCurrency()
+        val currencyName = viewModel.getFirstFavorite()
+        if (selectedCurrency != null) {
+            if (viewModel.isInFavorite(selectedCurrency)) {
+                setupFirstRow(CurrencyRate(selectedCurrency, 1.0))
+            } else {
+                setupFirstRow(CurrencyRate(currencyName!!, 1.0))
+            }
+        } else {
+            setupFirstRow(CurrencyRate(currencyName!!, 1.0))
+        }
+
     }
 
     private fun setupFirstRow(currencyRate: CurrencyRate) {
@@ -232,18 +244,25 @@ class CurrenciesFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        val navHostFragment=requireActivity().supportFragmentManager.findFragmentById(R.id.fragmentContainer)
-        if(navHostFragment?.arguments==null) {
+
+        viewModel.saveSelectedCurrency(binding.firstRow.currencyName.text.toString())
+
+        val navHostFragment =
+            requireActivity().supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+        if (navHostFragment?.arguments == null) {
             val args = Bundle()
             args.putString(CURRENCY_FROM_NAME, binding.firstRow.currencyName.text.toString())
-            if( adapter.rates.size>1){
-            args.putString(CURRENCY_TO_NAME, adapter.rates[1].name)}
+            if (adapter.rates.size > 1) {
+                args.putString(CURRENCY_TO_NAME, adapter.rates[1].name)
+            }
             navHostFragment?.arguments = args
-        }
-        else{
-            navHostFragment!!.requireArguments().putString(CURRENCY_FROM_NAME, binding.firstRow.currencyName.text.toString())
-            if( adapter.rates.size>1){
-            navHostFragment!!.requireArguments().putString(CURRENCY_TO_NAME, adapter.rates[1].name)}
+        } else {
+            navHostFragment!!.requireArguments()
+                .putString(CURRENCY_FROM_NAME, binding.firstRow.currencyName.text.toString())
+            if (adapter.rates.size > 1) {
+                navHostFragment!!.requireArguments()
+                    .putString(CURRENCY_TO_NAME, adapter.rates[1].name)
+            }
         }
 
     }
@@ -256,11 +275,10 @@ class CurrenciesFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-
     }
 
-    companion object{
-        const val CURRENCY_FROM_NAME="CURRENCY_FROM_NAME"
-        const val CURRENCY_TO_NAME="CURRENCY_TO_NAME"
+    companion object {
+        const val CURRENCY_FROM_NAME = "CURRENCY_FROM_NAME"
+        const val CURRENCY_TO_NAME = "CURRENCY_TO_NAME"
     }
 }

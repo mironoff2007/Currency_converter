@@ -12,6 +12,7 @@ class DataShared(context: Context, name: String) {
         private const val NUMBER_OF_CURRENCIES = "NUMBER_OF_CURRENCIES"
         private const val CURRENCY_NAME_KEY = "CURRENCY_NAME_KEY_"
         private const val CURRENCIES_FAVORITE_KEY = "CURRENCIES_FAVORITE_KEY"
+        private const val CURRENCY_SELECTED_NAME = "CURRENCY_SELECTED_NAME"
     }
 
     private val pref: SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
@@ -56,9 +57,15 @@ class DataShared(context: Context, name: String) {
         return arrayNames
     }
 
+    fun saveSelectedCurrency(name:String) {
+        editor.putString(CURRENCY_SELECTED_NAME,name).apply()
+    }
+
+    fun getSelectedCurrency():String? {
+        return pref.getString(CURRENCY_SELECTED_NAME,null)
+    }
+
     fun clearPrefs() {
         editor.clear().commit()
     }
-
-
 }
