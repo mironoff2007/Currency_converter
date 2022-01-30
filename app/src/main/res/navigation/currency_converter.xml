@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/currenciesFragment"
-        android:name="ru.mironov.currencyconverter.ui.CurrenciesFragment"
+        android:name="ru.mironov.currencyconverter.ui.ConverterFragment"
         android:label="Currency converter"
-        tools:layout="@layout/fragment_currencies" >
+        tools:layout="@layout/fragment_converter" >
         <action
             android:id="@+id/action_currenciesFragment_to_setKeyFragment2"
             app:destination="@id/setKeyFragment2" />

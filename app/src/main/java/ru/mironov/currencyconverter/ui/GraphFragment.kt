@@ -6,7 +6,6 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.graphics.Color
 import android.graphics.DashPathEffect
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.coroutineScope
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.components.LimitLine
-import com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
@@ -28,7 +25,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IFillFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.utils.Utils
-import kotlinx.android.synthetic.main.fragment_graph.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.mironov.currencyconverter.R
@@ -113,8 +109,8 @@ class GraphFragment : Fragment() {
         val navHostFragment=requireActivity().supportFragmentManager.findFragmentById(R.id.fragmentContainer)
         val args = navHostFragment!!.arguments
 
-        val posTo= spinnerToAdapter!!.spinnerTitles.indexOf(args!!.getString(CurrenciesFragment.CURRENCY_TO_NAME))
-        val posFrom=spinnerFromAdapter!!.spinnerTitles.indexOf(args!!.getString(CurrenciesFragment.CURRENCY_FROM_NAME))
+        val posTo= spinnerToAdapter!!.spinnerTitles.indexOf(args!!.getString(ConverterFragment.CURRENCY_TO_NAME))
+        val posFrom=spinnerFromAdapter!!.spinnerTitles.indexOf(args!!.getString(ConverterFragment.CURRENCY_FROM_NAME))
         binding.spinnerTo.setSelection(posTo)
         binding.spinnerFrom.setSelection(posFrom)
 

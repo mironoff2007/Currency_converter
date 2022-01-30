@@ -2,11 +2,9 @@ package ru.mironov.currencyconverter.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -15,25 +13,20 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentCurrenciesFavoriteBinding
 import ru.mironov.currencyconverter.model.CurrencyFavorite
-import ru.mironov.currencyconverter.model.Status
-import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
-import ru.mironov.currencyconverter.retrofit.ErrorUtil
+import ru.mironov.currencyconverter.model.ViewModelConverterFragment
 import ru.mironov.currencyconverter.ui.recyclerview.CheckBoxChangeListener
 import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesFavoriteAdapter
 import ru.mironov.currencyconverter.ui.recyclerview.CurrencyFavoriteViewHolder
-import java.util.*
 import kotlin.collections.ArrayList
 
 class CurrenciesFavoriteFragment : Fragment() {
 
-    private lateinit var viewModel: ViewModelCurrenciesFragment
+    private lateinit var viewModel: ViewModelConverterFragment
 
     private var _binding: FragmentCurrenciesFavoriteBinding? = null
 
@@ -57,7 +50,7 @@ class CurrenciesFavoriteFragment : Fragment() {
         _binding = FragmentCurrenciesFavoriteBinding.inflate(inflater, container, false)
 
         viewModel =
-            requireContext().appComponent.factory.create(ViewModelCurrenciesFragment::class.java)
+            requireContext().appComponent.factory.create(ViewModelConverterFragment::class.java)
 
         binding.checkAll.setOnCheckedChangeListener(object : CheckBoxChangeListener() {
             @SuppressLint("ResourceAsColor")

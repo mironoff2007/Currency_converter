@@ -2,14 +2,10 @@ package ru.mironov.currencyconverter.di
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import dagger.*
 import dagger.multibindings.IntoMap
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import ru.mironov.currencyconverter.MainActivity
-import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
+import ru.mironov.currencyconverter.model.ViewModelConverterFragment
 import ru.mironov.currencyconverter.model.ViewModelGraphFragment
 import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
 import ru.mironov.currencyconverter.model.ViewModelMainActivity
@@ -18,7 +14,6 @@ import ru.mironov.currencyconverter.repository.EncryptedDataShared
 import ru.mironov.currencyconverter.repository.Repository
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
 import ru.mironov.currencyconverter.ui.*
-import javax.inject.Singleton
 
 
 @Component(modules = [AppModule::class, AppBindsModule::class,RetrofitModule::class])
@@ -27,11 +22,9 @@ interface AppComponent  {
     fun inject(activity: MainActivity)
     fun inject(fragment: TabsFragment)
     fun inject(fragment: SetKeyFragment)
-    fun inject(fragment: CurrenciesFragment)
+    fun inject(fragment: ConverterFragment)
     fun inject(fragment: GraphFragment)
     fun inject(fragment: CurrenciesFavoriteFragment)
-
-
 
     val factory: MultiViewModelFactory
 
@@ -62,9 +55,7 @@ class AppModule() {
     fun provideDataShared(context:Context): DataShared {
         return DataShared(context,"cache")
     }
-
 }
-
 
 @Module()
 interface AppBindsModule {
@@ -78,13 +69,12 @@ interface AppBindsModule {
     fun provideViewModelViewModelMainActivity(viewModelMainActivity: ViewModelMainActivity): ViewModel
 
     @Binds
-    @[IntoMap ViewModelKey(ViewModelCurrenciesFragment::class)]
-    fun provideViewModelCurrenciesFragment(viewModelCurrenciesFragment: ViewModelCurrenciesFragment): ViewModel
+    @[IntoMap ViewModelKey(ViewModelConverterFragment::class)]
+    fun provideViewModelConverterFragment(viewModelConverterFragment: ViewModelConverterFragment): ViewModel
 
     @Binds
     @[IntoMap ViewModelKey(ViewModelGraphFragment::class)]
     fun provideViewModelGraphFragment(viewModelGraphFragment: ViewModelGraphFragment): ViewModel
-
 }
 
 

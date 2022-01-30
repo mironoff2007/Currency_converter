@@ -1,6 +1,5 @@
 package ru.mironov.currencyconverter.repository
 
-
 import retrofit2.Call
 import ru.mironov.currencyconverter.model.CurrencyFavorite
 import ru.mironov.currencyconverter.retrofit.CurrencyApi

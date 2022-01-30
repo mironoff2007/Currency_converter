@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import kotlinx.android.synthetic.main.fragment_currencies.*
+import kotlinx.android.synthetic.main.fragment_converter.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -25,10 +24,10 @@ import ru.mironov.currencyconverter.util.FormatNumbers.formatDoubleToString
 import ru.mironov.currencyconverter.util.FormatNumbers.getDoubleFromText
 import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
-import ru.mironov.currencyconverter.databinding.FragmentCurrenciesBinding
+import ru.mironov.currencyconverter.databinding.FragmentConverterBinding
 import ru.mironov.currencyconverter.model.CurrencyRate
 import ru.mironov.currencyconverter.model.Status
-import ru.mironov.currencyconverter.model.ViewModelCurrenciesFragment
+import ru.mironov.currencyconverter.model.ViewModelConverterFragment
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesAdapter
 import ru.mironov.currencyconverter.ui.recyclerview.CurrencyViewHolder
@@ -36,11 +35,11 @@ import ru.mironov.currencyconverter.util.CurrencyDiffUtilCallback
 import ru.mironov.currencyconverter.util.FlagSetter.setFlag
 import java.util.*
 
-class CurrenciesFragment : Fragment() {
+class ConverterFragment : Fragment() {
 
-    private lateinit var viewModel: ViewModelCurrenciesFragment
+    private lateinit var viewModel: ViewModelConverterFragment
 
-    private var _binding: FragmentCurrenciesBinding? = null
+    private var _binding: FragmentConverterBinding? = null
 
     private val binding get() = _binding!!
 
@@ -78,10 +77,10 @@ class CurrenciesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentCurrenciesBinding.inflate(inflater, container, false)
+        _binding = FragmentConverterBinding.inflate(inflater, container, false)
 
         viewModel =
-            requireContext().appComponent.factory.create(ViewModelCurrenciesFragment::class.java)
+            requireContext().appComponent.factory.create(ViewModelConverterFragment::class.java)
 
         adapterSetup()
         setupObserver()
