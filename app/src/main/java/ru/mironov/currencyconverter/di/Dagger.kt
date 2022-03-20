@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import dagger.*
 import dagger.multibindings.IntoMap
 import ru.mironov.currencyconverter.MainActivity
-import ru.mironov.currencyconverter.model.ViewModelConverterFragment
-import ru.mironov.currencyconverter.model.ViewModelGraphFragment
-import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
-import ru.mironov.currencyconverter.model.ViewModelMainActivity
+import ru.mironov.currencyconverter.model.viewmodels.ViewModelConverterFragment
+import ru.mironov.currencyconverter.model.viewmodels.ViewModelGraphFragment
+import ru.mironov.currencyconverter.model.viewmodels.ViewModelSetKeyFragment
+import ru.mironov.currencyconverter.model.viewmodels.ViewModelMainActivity
 import ru.mironov.currencyconverter.repository.DataShared
 import ru.mironov.currencyconverter.repository.EncryptedDataShared
 import ru.mironov.currencyconverter.repository.Repository

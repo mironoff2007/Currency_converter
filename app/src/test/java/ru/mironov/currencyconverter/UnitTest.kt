@@ -10,7 +10,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
-import ru.mironov.currencyconverter.retrofit.JsonRates
+import ru.mironov.currencyconverter.model.ResponseRates
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -43,20 +43,21 @@ class UnitTest {
     @Test
     fun retrofitTest(){
         val retrofit=Retrofit.Builder()
-            .baseUrl("https://freecurrencyapi.net/api/v2/")
+            .baseUrl("https://api.currencyapi.com/v3/")
             .addConverterFactory(
                 GsonConverterFactory.create(
                     GsonBuilder().serializeNulls()
                         .create()
                 )
             ).build()
-        val call: Call<JsonRates?> =retrofit.create(CurrencyApi::class.java).getRates("c")
+        val call: Call<ResponseRates?> =retrofit.create(CurrencyApi::class.java).getRates("c")
 
-        val response: Response<JsonRates?> = call!!.execute()
+        val response: Response<ResponseRates?> = call!!.execute()
 
-        var body:JsonRates?=null
+        var body: ResponseRates?=null
         if(response.body()!=null){
-            body= response.body() as JsonRates}
+            body= response.body() as ResponseRates
+        }
 
         //val converter =retrofit.requestBodyConverter<>(JsonError::class.java)
 

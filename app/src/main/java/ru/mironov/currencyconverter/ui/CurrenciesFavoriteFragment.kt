@@ -18,7 +18,7 @@ import ru.mironov.currencyconverter.R
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentCurrenciesFavoriteBinding
 import ru.mironov.currencyconverter.model.CurrencyFavorite
-import ru.mironov.currencyconverter.model.ViewModelConverterFragment
+import ru.mironov.currencyconverter.model.viewmodels.ViewModelConverterFragment
 import ru.mironov.currencyconverter.ui.recyclerview.CheckBoxChangeListener
 import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesFavoriteAdapter
 import ru.mironov.currencyconverter.ui.recyclerview.CurrencyFavoriteViewHolder

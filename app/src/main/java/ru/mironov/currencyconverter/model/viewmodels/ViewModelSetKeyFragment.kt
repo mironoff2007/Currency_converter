@@ -1,13 +1,15 @@
-package ru.mironov.currencyconverter.model
+package ru.mironov.currencyconverter.model.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.mironov.currencyconverter.model.CurrencyFavorite
+import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.repository.Repository
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
-import ru.mironov.currencyconverter.retrofit.JsonRates
+import ru.mironov.currencyconverter.model.ResponseRates
 import javax.inject.Inject
 
 open class ViewModelSetKeyFragment @Inject constructor() : ViewModel() {
@@ -17,7 +19,7 @@ open class ViewModelSetKeyFragment @Inject constructor() : ViewModel() {
 
     var mutableStatus = MutableLiveData<Status>()
 
-    private var ratesObject: JsonRates? = null
+    private var ratesObject: ResponseRates? = null
 
     fun saveNames(arrayNames: ArrayList<String>){
         repository.saveCurrenciesNames(arrayNames)
@@ -32,10 +34,10 @@ open class ViewModelSetKeyFragment @Inject constructor() : ViewModel() {
     fun getCurrencyRate(apiKey: String) {
         mutableStatus.postValue(Status.LOADING)
         repository.getRatesFromNetwork(apiKey)
-            ?.enqueue(object : Callback<JsonRates?> {
+            ?.enqueue(object : Callback<ResponseRates?> {
                 override fun onResponse(
-                    call: Call<JsonRates?>,
-                    response: Response<JsonRates?>
+                    call: Call<ResponseRates?>,
+                    response: Response<ResponseRates?>
                 ) {
                     if(response.body() != null){
 
@@ -64,8 +66,8 @@ open class ViewModelSetKeyFragment @Inject constructor() : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: Call<JsonRates?>, t: Throwable) {
-                    mutableStatus.postValue(Status.ERROR(t.message.toString(),0))
+                override fun onFailure(call: Call<ResponseRates?>, t: Throwable) {
+                    mutableStatus.postValue(Status.ERROR(t.message.toString(), 0))
                 }
             })
     }

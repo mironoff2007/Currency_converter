@@ -1,4 +1,4 @@
-package ru.mironov.currencyconverter.model
+package ru.mironov.currencyconverter.model.viewmodels
 
 import androidx.lifecycle.ViewModel
 import ru.mironov.currencyconverter.repository.Repository

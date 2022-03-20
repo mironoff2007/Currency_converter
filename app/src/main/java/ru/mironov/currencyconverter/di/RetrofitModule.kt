@@ -24,7 +24,7 @@ object RetrofitModule {
     @Provides
     fun provideRetrofit(): Retrofit.Builder {
         return Retrofit.Builder()
-            .baseUrl("https://freecurrencyapi.net/api/v2/")
+            .baseUrl("https://api.currencyapi.com/v3/")
             .addConverterFactory(
                 GsonConverterFactory.create(
                     GsonBuilder().serializeNulls()

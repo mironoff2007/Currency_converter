@@ -2,13 +2,12 @@ package ru.mironov.currencyconverter
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Debug
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import ru.mironov.currencyconverter.model.ViewModelMainActivity
+import ru.mironov.currencyconverter.model.viewmodels.ViewModelMainActivity
 
 class MainActivity : AppCompatActivity() {
 

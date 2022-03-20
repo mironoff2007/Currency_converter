@@ -27,7 +27,7 @@ import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentConverterBinding
 import ru.mironov.currencyconverter.model.CurrencyRate
 import ru.mironov.currencyconverter.model.Status
-import ru.mironov.currencyconverter.model.ViewModelConverterFragment
+import ru.mironov.currencyconverter.model.viewmodels.ViewModelConverterFragment
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.ui.recyclerview.CurrenciesAdapter
 import ru.mironov.currencyconverter.ui.recyclerview.CurrencyViewHolder

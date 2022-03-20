@@ -1,4 +1,4 @@
-package ru.mironov.currencyconverter.retrofit
+package ru.mironov.currencyconverter.model
 
 import com.google.gson.annotations.SerializedName
 

@@ -32,7 +32,7 @@ import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.databinding.FragmentGraphBinding
 import ru.mironov.currencyconverter.model.CurrencyHistory
 import ru.mironov.currencyconverter.model.Status
-import ru.mironov.currencyconverter.model.ViewModelGraphFragment
+import ru.mironov.currencyconverter.model.viewmodels.ViewModelGraphFragment
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import ru.mironov.currencyconverter.ui.mpchart.DateXAxisValueFormatter
 import ru.mironov.currencyconverter.ui.mpchart.MyMarkerView

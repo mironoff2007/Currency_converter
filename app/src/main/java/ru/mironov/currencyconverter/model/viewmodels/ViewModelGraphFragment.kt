@@ -1,4 +1,4 @@
-package ru.mironov.currencyconverter.model
+package ru.mironov.currencyconverter.model.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,8 +9,10 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.mironov.currencyconverter.model.CurrencyHistory
+import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
-import ru.mironov.currencyconverter.retrofit.JsonHistory
+import ru.mironov.currencyconverter.model.ResponseHistory
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -24,7 +26,7 @@ open class ViewModelGraphFragment @Inject constructor() : ViewModel() {
 
     var mutableStatus = MutableLiveData<Status>()
 
-    private var ratesObject: JsonHistory? = null
+    private var ratesObject: ResponseHistory? = null
 
 
     fun getCurrencyHistory(
@@ -35,10 +37,10 @@ open class ViewModelGraphFragment @Inject constructor() : ViewModel() {
     ) {
         mutableStatus.postValue(Status.LOADING)
         repository.getHistoryFromNetwork(nameBaseCurrency, dateFrom, dateTo)!!
-            .enqueue(object : Callback<JsonHistory?> {
+            .enqueue(object : Callback<ResponseHistory?> {
                 override fun onResponse(
-                    call: Call<JsonHistory?>,
-                    response: Response<JsonHistory?>
+                    call: Call<ResponseHistory?>,
+                    response: Response<ResponseHistory?>
                 ) {
                     if (response.body() != null) {
                         viewModelScope.launch(Dispatchers.Default) {
@@ -71,7 +73,7 @@ open class ViewModelGraphFragment @Inject constructor() : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: Call<JsonHistory?>, t: Throwable) {
+                override fun onFailure(call: Call<ResponseHistory?>, t: Throwable) {
                     mutableStatus.postValue(Status.ERROR(t.message.toString(), 0))
                 }
             })

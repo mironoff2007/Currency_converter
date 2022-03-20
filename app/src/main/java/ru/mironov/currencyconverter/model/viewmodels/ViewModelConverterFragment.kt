@@ -1,15 +1,18 @@
-package ru.mironov.currencyconverter.model
+package ru.mironov.currencyconverter.model.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.mironov.currencyconverter.repository.Repository
-import ru.mironov.currencyconverter.retrofit.JsonRates
+import ru.mironov.currencyconverter.model.ResponseRates
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.mironov.currencyconverter.model.CurrencyFavorite
+import ru.mironov.currencyconverter.model.CurrencyRate
+import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
 import java.util.*
 import javax.inject.Inject
@@ -22,7 +25,7 @@ open class ViewModelConverterFragment @Inject constructor() : ViewModel() {
 
     var mutableStatus = MutableLiveData<Status>()
 
-    private var ratesObject: JsonRates? = null
+    private var ratesObject: ResponseRates? = null
 
     var responseCurrency: String? = null
 
@@ -35,10 +38,10 @@ open class ViewModelConverterFragment @Inject constructor() : ViewModel() {
     fun getCurrencyRate(name: String) {
         mutableStatus.postValue(Status.LOADING)
         repository.getRatesBaseSpecificFromNetwork(name)
-            ?.enqueue(object : Callback<JsonRates?> {
+            ?.enqueue(object : Callback<ResponseRates?> {
                 override fun onResponse(
-                    call: Call<JsonRates?>,
-                    response: Response<JsonRates?>
+                    call: Call<ResponseRates?>,
+                    response: Response<ResponseRates?>
                 ) {
                     if (response.body() != null) {
                         viewModelScope.launch(Dispatchers.Default) {
@@ -64,15 +67,15 @@ open class ViewModelConverterFragment @Inject constructor() : ViewModel() {
                                     if (cur.key != ratesObject?.getBaseCurrency()
                                             .toString() && favorite.contains(cur.key)
                                     ) {
-                                        arrayRates.add(CurrencyRate(cur.key, cur.value))
+                                        arrayRates.add(CurrencyRate(cur.key, cur.value.rate))
                                     }
                                 }
                             } else {
                                 synchronized(arrayRates) {
                                     arrayRates.forEach { it ->
-                                        val rate = ratesObject?.getRates()?.get(it.name)
-                                        if (rate != null) {
-                                            it.rate = rate
+                                        val currency = ratesObject?.getRates()?.get(it.name)
+                                        if (currency != null) {
+                                            it.rate = currency.rate
                                         }
                                     }
                                 }
@@ -97,7 +100,7 @@ open class ViewModelConverterFragment @Inject constructor() : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: Call<JsonRates?>, t: Throwable) {
+                override fun onFailure(call: Call<ResponseRates?>, t: Throwable) {
                     mutableStatus.postValue(Status.ERROR(t.message.toString(), 0))
                 }
             })
@@ -138,7 +141,7 @@ open class ViewModelConverterFragment @Inject constructor() : ViewModel() {
     }
 
     fun getFirstFavorite(): String? {
-        getFavoriteCurrencies()!!.forEach(){
+        getFavoriteCurrencies()?.forEach(){
             if(it.isFavorite){
                 return it.name
             }

@@ -8,7 +8,6 @@ import ru.mironov.currencyconverter.di.DaggerAppComponent
 class MainApp : Application() {
 
     lateinit var appComponent: AppComponent
-        private set
 
     override fun onCreate() {
         super.onCreate()

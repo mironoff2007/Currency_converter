@@ -3,8 +3,8 @@ package ru.mironov.currencyconverter.repository
 import retrofit2.Call
 import ru.mironov.currencyconverter.model.CurrencyFavorite
 import ru.mironov.currencyconverter.retrofit.CurrencyApi
-import ru.mironov.currencyconverter.retrofit.JsonHistory
-import ru.mironov.currencyconverter.retrofit.JsonRates
+import ru.mironov.currencyconverter.model.ResponseHistory
+import ru.mironov.currencyconverter.model.ResponseRates
 import javax.inject.Inject
 
 open class Repository @Inject constructor (protected var dataShared: DataShared, protected var encryptedDataShared: EncryptedDataShared, var retrofit: CurrencyApi) {
@@ -25,15 +25,15 @@ open class Repository @Inject constructor (protected var dataShared: DataShared,
         return encryptedDataShared.getString(API_KEY)
     }
 
-    fun getRatesBaseSpecificFromNetwork(name:String): Call<JsonRates?>? {
+    fun getRatesBaseSpecificFromNetwork(name:String): Call<ResponseRates?>? {
         return  retrofit.getRatesBySpecific(getApiKey().toString(),name)
     }
 
-    fun getRatesFromNetwork(apiKey:String): Call<JsonRates?>? {
+    fun getRatesFromNetwork(apiKey:String): Call<ResponseRates?>? {
         return  retrofit.getRates(apiKey)
     }
 
-    fun getHistoryFromNetwork(name:String,dateFrom:String,dateTo:String): Call<JsonHistory?>? {
+    fun getHistoryFromNetwork(name:String,dateFrom:String,dateTo:String): Call<ResponseHistory?>? {
         return  retrofit.getHistory(getApiKey().toString(),name,dateFrom,dateTo)
     }
 

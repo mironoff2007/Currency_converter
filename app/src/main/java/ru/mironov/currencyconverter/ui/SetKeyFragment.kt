@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import ru.mironov.currencyconverter.databinding.FragmentSetkeyBinding
 import androidx.navigation.fragment.findNavController
 import ru.mironov.currencyconverter.R
-import ru.mironov.currencyconverter.model.ViewModelSetKeyFragment
+import ru.mironov.currencyconverter.model.viewmodels.ViewModelSetKeyFragment
 import ru.mironov.currencyconverter.appComponent
 import ru.mironov.currencyconverter.model.Status
 import ru.mironov.currencyconverter.retrofit.ErrorUtil
