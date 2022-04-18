@@ -1,6 +1,6 @@
 # Currency converter
 
-*Api depacated, history graphs not working (TBD)
+*Api is depacated, history graphs not working (TBD)
 https://freecurrencyapi.net API is used.
 
 -Dagger 2\
